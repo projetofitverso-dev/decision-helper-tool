@@ -18,19 +18,19 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 160 84% 10%;
 
-    /* Primary - Health green */
-    --primary: 158 64% 42%;
+    /* Primary - Verde do logotipo */
+    --primary: 158 61% 31%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 158 64% 35%;
-    --primary-glow: 158 64% 52%;
+    --primary-hover: 158 61% 25%;
+    --primary-glow: 158 61% 41%;
 
-    /* Secondary - Soft blue */
-    --secondary: 201 96% 45%;
+    /* Secondary - Laranja do logotipo */
+    --secondary: 28 87% 62%;
     --secondary-foreground: 0 0% 100%;
 
-    /* Accent - Energetic orange */
-    --accent: 33 100% 50%;
-    --accent-foreground: 0 0% 100%;
+    /* Accent - Laranja mais claro */
+    --accent: 28 87% 72%;
+    --accent-foreground: 160 84% 10%;
 
     /* Water blue */
     --water: 199 89% 48%;
@@ -53,22 +53,22 @@ All colors MUST be HSL.
 
     --border: 160 10% 90%;
     --input: 160 10% 95%;
-    --ring: 158 64% 42%;
+    --ring: 158 61% 31%;
 
     --radius: 1rem;
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-water: linear-gradient(135deg, hsl(var(--water)), hsl(var(--water-light)));
-    --gradient-health: linear-gradient(180deg, hsl(158 64% 95%), hsl(0 0% 100%));
-    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)), hsl(38 92% 60%));
+    /* Gradients com as cores do logo */
+    --gradient-primary: linear-gradient(135deg, hsl(158 61% 31%), hsl(28 87% 62%));
+    --gradient-water: linear-gradient(135deg, hsl(199 89% 48%), hsl(199 89% 68%));
+    --gradient-health: linear-gradient(180deg, hsl(158 61% 98%), hsl(28 87% 98%));
+    --gradient-accent: linear-gradient(135deg, hsl(28 87% 62%), hsl(28 87% 72%));
 
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(var(--primary) / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(var(--primary) / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(var(--primary) / 0.1);
-    --shadow-xl: 0 20px 25px -5px hsl(var(--primary) / 0.15);
-    --shadow-glow: 0 0 30px hsl(var(--primary-glow) / 0.3);
+    /* Shadows com a cor primária */
+    --shadow-sm: 0 1px 2px 0 hsl(158 61% 31% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(158 61% 31% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(158 61% 31% / 0.1);
+    --shadow-xl: 0 20px 25px -5px hsl(158 61% 31% / 0.15);
+    --shadow-glow: 0 0 30px hsl(158 61% 41% / 0.3);
 
     /* Animations */
     --transition-fast: all 0.15s ease;
@@ -77,12 +77,12 @@ All colors MUST be HSL.
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 160 10% 26%;
-    --sidebar-primary: 158 64% 42%;
+    --sidebar-primary: 158 61% 31%;
     --sidebar-primary-foreground: 0 0% 98%;
     --sidebar-accent: 160 10% 95%;
     --sidebar-accent-foreground: 160 10% 10%;
     --sidebar-border: 160 10% 91%;
-    --sidebar-ring: 158 64% 42%;
+    --sidebar-ring: 158 61% 31%;
   }
 
   .dark {
