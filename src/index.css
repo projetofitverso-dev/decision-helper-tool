@@ -8,60 +8,60 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Base colors */
-    --background: 0 0% 100%;
-    --foreground: 160 84% 10%;
+    /* Base colors - Cores sólidas vibrantes */
+    --background: 0 0% 98%;
+    --foreground: 0 0% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 160 84% 10%;
+    --card-foreground: 0 0% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 160 84% 10%;
+    --popover-foreground: 0 0% 15%;
 
-    /* Primary - Verde do logotipo */
-    --primary: 158 61% 31%;
+    /* Primary - Verde vibrante sólido */
+    --primary: 145 70% 45%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 158 61% 25%;
-    --primary-glow: 158 61% 41%;
+    --primary-hover: 145 70% 38%;
+    --primary-glow: 145 70% 55%;
 
-    /* Secondary - Laranja do logotipo */
-    --secondary: 28 87% 62%;
+    /* Secondary - Laranja vibrante sólido */
+    --secondary: 25 95% 55%;
     --secondary-foreground: 0 0% 100%;
 
-    /* Accent - Laranja mais claro */
-    --accent: 28 87% 72%;
-    --accent-foreground: 160 84% 10%;
+    /* Accent - Azul vibrante */
+    --accent: 210 90% 55%;
+    --accent-foreground: 0 0% 100%;
 
-    /* Water blue */
-    --water: 199 89% 48%;
-    --water-light: 199 89% 95%;
-    --water-dark: 199 89% 35%;
+    /* Water blue sólido */
+    --water: 195 100% 50%;
+    --water-light: 195 100% 95%;
+    --water-dark: 195 100% 35%;
 
-    /* Success, warning, destructive */
-    --success: 142 71% 45%;
+    /* Success, warning, destructive - Cores sólidas */
+    --success: 140 75% 50%;
     --success-foreground: 0 0% 100%;
     
-    --warning: 38 92% 50%;
+    --warning: 35 100% 55%;
     --warning-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 355 90% 55%;
+    --destructive-foreground: 0 0% 100%;
 
-    /* Neutral colors */
-    --muted: 160 10% 96%;
-    --muted-foreground: 160 10% 40%;
+    /* Neutral colors - Tons de cinza sólidos */
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 40%;
 
-    --border: 160 10% 90%;
-    --input: 160 10% 95%;
-    --ring: 158 61% 31%;
+    --border: 0 0% 88%;
+    --input: 0 0% 95%;
+    --ring: 145 70% 45%;
 
-    --radius: 1rem;
+    --radius: 0.75rem;
 
-    /* Gradients com as cores do logo */
-    --gradient-primary: linear-gradient(135deg, hsl(158 61% 31%), hsl(28 87% 62%));
-    --gradient-water: linear-gradient(135deg, hsl(199 89% 48%), hsl(199 89% 68%));
-    --gradient-health: linear-gradient(180deg, hsl(158 61% 98%), hsl(28 87% 98%));
-    --gradient-accent: linear-gradient(135deg, hsl(28 87% 62%), hsl(28 87% 72%));
+    /* Cores sólidas para backgrounds */
+    --gradient-primary: hsl(145 70% 45%);
+    --gradient-water: hsl(195 100% 50%);
+    --gradient-health: hsl(0 0% 98%);
+    --gradient-accent: hsl(25 95% 55%);
 
     /* Shadows com a cor primária */
     --shadow-sm: 0 1px 2px 0 hsl(158 61% 31% / 0.05);
