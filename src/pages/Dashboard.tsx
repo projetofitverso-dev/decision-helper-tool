@@ -1,7 +1,11 @@
 import { Link } from 'react-router-dom';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Card } from '@/components/ui/card';
-import { Droplets, Utensils, ChefHat, Ruler, Plus } from 'lucide-react';
+import { Droplets, Utensils, Ruler, Plus } from 'lucide-react';
+import waterIntakeImg from '@/assets/water-intake.jpg';
+import foodSubstitutionImg from '@/assets/food-substitution.jpg';
+import measurementsImg from '@/assets/measurements.jpg';
+import addFoodImg from '@/assets/add-food.jpg';
 
 const Dashboard = () => {
   const features = [
@@ -11,7 +15,8 @@ const Dashboard = () => {
       description: 'Registre e acompanhe sua hidratação diária',
       path: '/dashboard/water',
       color: 'bg-water text-water-foreground',
-      gradient: 'bg-gradient-water'
+      gradient: 'bg-gradient-water',
+      image: waterIntakeImg
     },
     {
       icon: Utensils,
@@ -19,15 +24,8 @@ const Dashboard = () => {
       description: 'Troque alimentos mantendo o valor nutricional',
       path: '/dashboard/substitution',
       color: 'bg-primary text-primary-foreground',
-      gradient: 'bg-gradient-primary'
-    },
-    {
-      icon: ChefHat,
-      title: 'Cozinha Virtual',
-      description: 'Monte refeições personalizadas e equilibradas',
-      path: '/dashboard/kitchen',
-      color: 'bg-accent text-accent-foreground',
-      gradient: 'bg-gradient-accent'
+      gradient: 'bg-gradient-primary',
+      image: foodSubstitutionImg
     },
     {
       icon: Ruler,
@@ -35,7 +33,8 @@ const Dashboard = () => {
       description: 'Acompanhe sua evolução física',
       path: '/dashboard/measurements',
       color: 'bg-secondary text-secondary-foreground',
-      gradient: 'bg-gradient-primary'
+      gradient: 'bg-gradient-primary',
+      image: measurementsImg
     },
     {
       icon: Plus,
@@ -43,7 +42,8 @@ const Dashboard = () => {
       description: 'Personalize sua lista de alimentos',
       path: '/dashboard/add-food',
       color: 'bg-success text-success-foreground',
-      gradient: 'bg-gradient-primary'
+      gradient: 'bg-gradient-primary',
+      image: addFoodImg
     }
   ];
 
@@ -60,14 +60,21 @@ const Dashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map(({ icon: Icon, title, description, path, gradient }) => (
+          {features.map(({ icon: Icon, title, description, path, gradient, image }) => (
             <Link key={path} to={path}>
-              <Card className="p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden relative group">
-                <div className={`absolute inset-0 ${gradient} opacity-5 group-hover:opacity-10 transition-opacity`} />
-                <div className="relative">
-                  <div className={`w-12 h-12 rounded-lg ${gradient} flex items-center justify-center mb-4`}>
+              <Card className="hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden group">
+                <div className="relative h-48 overflow-hidden">
+                  <img 
+                    src={image} 
+                    alt={title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className={`absolute inset-0 ${gradient} opacity-40 group-hover:opacity-30 transition-opacity`} />
+                  <div className={`absolute top-4 left-4 w-12 h-12 rounded-lg ${gradient} flex items-center justify-center`}>
                     <Icon className="text-white" size={24} />
                   </div>
+                </div>
+                <div className="p-6">
                   <h3 className="text-xl font-semibold text-foreground mb-2">
                     {title}
                   </h3>
