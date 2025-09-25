@@ -8,7 +8,7 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import WaterIntake from "./pages/WaterIntake";
 import FoodSubstitution from "./pages/FoodSubstitution";
-import VirtualKitchen from "./pages/VirtualKitchen";
+
 import Measurements from "./pages/Measurements";
 import AddFood from "./pages/AddFood";
 import NotFound from "./pages/NotFound";
@@ -28,7 +28,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/water" element={<WaterIntake />} />
           <Route path="/dashboard/substitution" element={<FoodSubstitution />} />
-          <Route path="/dashboard/kitchen" element={<VirtualKitchen />} />
+          
           <Route path="/dashboard/measurements" element={<Measurements />} />
           <Route path="/dashboard/add-food" element={<AddFood />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

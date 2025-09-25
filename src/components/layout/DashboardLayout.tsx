@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, Home, User, Settings, HelpCircle, LogOut, Droplets, Utensils, ChefHat, Ruler, Plus } from 'lucide-react';
+import { Menu, X, Home, User, Settings, HelpCircle, LogOut, Droplets, Utensils, Ruler, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
@@ -29,7 +29,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     { icon: Home, label: 'Início', path: '/dashboard' },
     { icon: Droplets, label: 'Consumo de Água', path: '/dashboard/water' },
     { icon: Utensils, label: 'Lista de Substituição', path: '/dashboard/substitution' },
-    { icon: ChefHat, label: 'Cozinha Virtual', path: '/dashboard/kitchen' },
     { icon: Ruler, label: 'Medidas', path: '/dashboard/measurements' },
     { icon: Plus, label: 'Adicionar Alimento', path: '/dashboard/add-food' },
     { icon: User, label: 'Meu Perfil', path: '/dashboard/profile' },
