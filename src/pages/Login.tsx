@@ -36,7 +36,7 @@ const Login = () => {
   return (
     <AuthLayout 
       title="Entrar" 
-      subtitle="Acesse sua conta FitVerso"
+      subtitle="Bem-vindo de volta!"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>

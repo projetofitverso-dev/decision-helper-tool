@@ -15,14 +15,19 @@ const Measurements = () => {
     age: 25,
     waist: 80,
     abdomen: 85,
-    hip: 95,
-    arm: 30,
-    leg: 55
+    hip: 95
   });
 
   const calculateBMI = () => {
     const heightInMeters = measurements.height / 100;
     return (measurements.weight / (heightInMeters * heightInMeters)).toFixed(1);
+  };
+
+  const calculateWaistHipRatio = () => {
+    if (measurements.waist && measurements.hip) {
+      return (measurements.waist / measurements.hip).toFixed(2);
+    }
+    return '0.00';
   };
 
   const getBMICategory = (bmi: number) => {
@@ -196,26 +201,17 @@ const Measurements = () => {
               />
             </div>
             
-            <div>
-              <Label htmlFor="arm">Braço</Label>
-              <Input
-                id="arm"
-                type="number"
-                value={measurements.arm}
-                onChange={(e) => handleChange('arm', e.target.value)}
-                className="mt-1"
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="leg">Perna</Label>
-              <Input
-                id="leg"
-                type="number"
-                value={measurements.leg}
-                onChange={(e) => handleChange('leg', e.target.value)}
-                className="mt-1"
-              />
+            <div className="md:col-span-3">
+              <div className="bg-gradient-health p-4 rounded-lg mt-2">
+                <Label className="text-primary font-semibold">Relação Cintura/Quadril (RCQ)</Label>
+                <div className="mt-2 flex items-center gap-4">
+                  <p className="text-2xl font-bold text-primary">{calculateWaistHipRatio()}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {parseFloat(calculateWaistHipRatio()) <= 0.85 ? '✅ Ideal' : 
+                     parseFloat(calculateWaistHipRatio()) <= 0.90 ? '⚠️ Atenção' : '⚠️ Risco aumentado'}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
           

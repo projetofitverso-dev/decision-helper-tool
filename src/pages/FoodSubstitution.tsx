@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Apple, Beef, Wheat, Fish, Milk, Egg, Calculator } from 'lucide-react';
+import { Apple, Beef, Wheat, Fish, Milk, Egg, Calculator, Carrot, Cherry } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const FoodSubstitution = () => {
@@ -17,12 +17,12 @@ const FoodSubstitution = () => {
   const [result, setResult] = useState<any>(null);
 
   const foodCategories = [
-    { icon: Wheat, label: 'Carboidratos', value: 'carbs' },
-    { icon: Beef, label: 'Proteínas', value: 'protein' },
-    { icon: Fish, label: 'Gorduras', value: 'fats' },
-    { icon: Apple, label: 'Frutas', value: 'fruits' },
-    { icon: Egg, label: 'Leguminosas', value: 'legumes' },
-    { icon: Milk, label: 'Laticínios', value: 'dairy' }
+    { icon: Wheat, label: 'Carboidratos', value: 'carbs', color: 'bg-amber-100 text-amber-700 hover:bg-amber-200', emoji: '🌾' },
+    { icon: Beef, label: 'Proteínas', value: 'protein', color: 'bg-red-100 text-red-700 hover:bg-red-200', emoji: '🥩' },
+    { icon: Fish, label: 'Gorduras', value: 'fats', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200', emoji: '🐟' },
+    { icon: Apple, label: 'Frutas', value: 'fruits', color: 'bg-green-100 text-green-700 hover:bg-green-200', emoji: '🍎' },
+    { icon: Egg, label: 'Leguminosas', value: 'legumes', color: 'bg-purple-100 text-purple-700 hover:bg-purple-200', emoji: '🫘' },
+    { icon: Milk, label: 'Laticínios', value: 'dairy', color: 'bg-cyan-100 text-cyan-700 hover:bg-cyan-200', emoji: '🥛' }
   ];
 
   const foodOptions = {
@@ -81,20 +81,19 @@ const FoodSubstitution = () => {
             Selecione a categoria do alimento
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            {foodCategories.map(({ icon: Icon, label, value }) => (
+            {foodCategories.map(({ icon: Icon, label, value, color, emoji }) => (
               <button
                 key={value}
                 onClick={() => setSelectedCategory(value)}
-                className={`p-4 rounded-lg border-2 transition-all hover:shadow-md ${
+                className={`p-4 rounded-lg border-2 transition-all hover:shadow-lg transform hover:scale-105 ${
                   selectedCategory === value 
-                    ? 'border-primary bg-primary/10' 
-                    : 'border-border hover:border-primary/50'
+                    ? `${color} ring-2 ring-primary shadow-md` 
+                    : `${color}`
                 }`}
               >
-                <Icon className={`mx-auto mb-2 ${
-                  selectedCategory === value ? 'text-primary' : 'text-muted-foreground'
-                }`} size={24} />
-                <p className="text-xs font-medium">{label}</p>
+                <div className="text-3xl mb-1">{emoji}</div>
+                <Icon className="mx-auto mb-2" size={20} />
+                <p className="text-xs font-semibold">{label}</p>
               </button>
             ))}
           </div>

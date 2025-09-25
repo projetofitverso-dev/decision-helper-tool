@@ -49,7 +49,7 @@ const Register = () => {
 
   return (
     <AuthLayout 
-      title="Registrar" 
+      title="Cadastro" 
       subtitle="Crie sua conta em poucos minutos"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -153,7 +153,7 @@ const Register = () => {
         </div>
 
         <Button type="submit" className="w-full bg-gradient-primary hover:opacity-90">
-          CADASTRAR
+          Cadastrar
         </Button>
 
         <p className="text-center text-sm text-muted-foreground">
