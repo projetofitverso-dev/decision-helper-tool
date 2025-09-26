@@ -11,6 +11,8 @@ import FoodSubstitution from "./pages/FoodSubstitution";
 
 import Measurements from "./pages/Measurements";
 import AddFood from "./pages/AddFood";
+import MyProfile from "./pages/MyProfile";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +33,8 @@ const App = () => (
           
           <Route path="/dashboard/measurements" element={<Measurements />} />
           <Route path="/dashboard/add-food" element={<AddFood />} />
+          <Route path="/dashboard/profile" element={<MyProfile />} />
+          <Route path="/dashboard/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
