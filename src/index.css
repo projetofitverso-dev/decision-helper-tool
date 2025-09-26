@@ -8,60 +8,66 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Base colors - Cores sólidas vibrantes */
-    --background: 0 0% 98%;
-    --foreground: 0 0% 15%;
+    /* Base colors - Clean modern palette */
+    --background: 0 0% 97%;
+    --foreground: 150 25% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 15%;
+    --card-foreground: 150 25% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 15%;
+    --popover-foreground: 150 25% 15%;
 
-    /* Primary - Verde vibrante sólido */
-    --primary: 145 70% 45%;
+    /* Primary - Verde profundo da logo */
+    --primary: 150 65% 28%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 145 70% 38%;
-    --primary-glow: 145 70% 55%;
+    --primary-hover: 150 70% 23%;
+    --primary-glow: 150 60% 35%;
+    --primary-light: 150 40% 95%;
 
-    /* Secondary - Laranja vibrante sólido */
-    --secondary: 25 95% 55%;
+    /* Secondary - Laranja vibrante da logo */
+    --secondary: 25 88% 58%;
     --secondary-foreground: 0 0% 100%;
+    --secondary-hover: 25 90% 52%;
+    --secondary-glow: 25 85% 65%;
+    --secondary-light: 25 60% 95%;
 
-    /* Accent - Azul vibrante */
-    --accent: 210 90% 55%;
-    --accent-foreground: 0 0% 100%;
+    /* Accent - Verde suave complementar */
+    --accent: 150 20% 96%;
+    --accent-foreground: 150 25% 20%;
+    --accent-hover: 150 25% 92%;
 
-    /* Water blue sólido */
+    /* Water blue */
     --water: 195 100% 50%;
     --water-light: 195 100% 95%;
     --water-dark: 195 100% 35%;
 
-    /* Success, warning, destructive - Cores sólidas */
-    --success: 140 75% 50%;
+    /* Success, warning, destructive */
+    --success: 150 60% 35%;
     --success-foreground: 0 0% 100%;
     
     --warning: 35 100% 55%;
     --warning-foreground: 0 0% 100%;
 
-    --destructive: 355 90% 55%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Neutral colors - Tons de cinza sólidos */
-    --muted: 0 0% 94%;
-    --muted-foreground: 0 0% 40%;
+    /* Neutral colors - Modern grays */
+    --muted: 150 10% 95%;
+    --muted-foreground: 150 10% 40%;
 
-    --border: 0 0% 88%;
-    --input: 0 0% 95%;
-    --ring: 145 70% 45%;
+    --border: 150 10% 90%;
+    --input: 0 0% 100%;
+    --ring: 150 65% 28%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
-    /* Cores sólidas para backgrounds */
-    --gradient-primary: hsl(145 70% 45%);
-    --gradient-water: hsl(195 100% 50%);
-    --gradient-health: hsl(0 0% 98%);
-    --gradient-accent: hsl(25 95% 55%);
+    /* Gradients - Verde para laranja */
+    --gradient-primary: linear-gradient(135deg, hsl(150 65% 28%), hsl(150 60% 35%));
+    --gradient-secondary: linear-gradient(135deg, hsl(25 88% 58%), hsl(25 85% 65%));
+    --gradient-mixed: linear-gradient(135deg, hsl(150 65% 28%), hsl(25 88% 58%));
+    --gradient-health: linear-gradient(180deg, hsl(150 20% 98%), hsl(25 20% 98%));
+    --gradient-accent: linear-gradient(135deg, hsl(150 60% 35%), hsl(25 85% 65%));
 
     /* Shadows com a cor primária */
     --shadow-sm: 0 1px 2px 0 hsl(158 61% 31% / 0.05);
