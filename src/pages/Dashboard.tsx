@@ -1,49 +1,65 @@
 import { Link } from 'react-router-dom';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Card } from '@/components/ui/card';
-import { Droplets, Utensils, Ruler, Plus } from 'lucide-react';
-import waterIntakeImg from '@/assets/water-icon.jpg';
-import foodSubstitutionImg from '@/assets/food-substitution-icon.jpg';
-import measurementsImg from '@/assets/measurements-icon.jpg';
-import addFoodImg from '@/assets/add-food-icon.jpg';
+import dashboardIcons from '@/assets/dashboard-icons.png';
 
 const Dashboard = () => {
   const features = [
     {
-      icon: Droplets,
       title: 'Consumo de Água',
       description: 'Registre e acompanhe sua hidratação diária',
       path: '/dashboard/water',
       color: 'bg-water text-water-foreground',
       gradient: 'bg-gradient-water',
-      image: waterIntakeImg
+      iconStyle: {
+        backgroundImage: `url(${dashboardIcons})`,
+        backgroundPosition: '0% 0%',
+        backgroundSize: '200%',
+        width: '60px',
+        height: '60px'
+      }
     },
     {
-      icon: Utensils,
       title: 'Lista de Substituição',
       description: 'Troque alimentos mantendo o valor nutricional',
       path: '/dashboard/substitution',
       color: 'bg-primary text-primary-foreground',
       gradient: 'bg-gradient-primary',
-      image: foodSubstitutionImg
+      iconStyle: {
+        backgroundImage: `url(${dashboardIcons})`,
+        backgroundPosition: '100% 0%',
+        backgroundSize: '200%',
+        width: '60px',
+        height: '60px'
+      }
     },
     {
-      icon: Ruler,
       title: 'Medidas Antropométricas',
       description: 'Acompanhe sua evolução física',
       path: '/dashboard/measurements',
       color: 'bg-secondary text-secondary-foreground',
       gradient: 'bg-gradient-primary',
-      image: measurementsImg
+      iconStyle: {
+        backgroundImage: `url(${dashboardIcons})`,
+        backgroundPosition: '100% 50%',
+        backgroundSize: '200%',
+        width: '60px',
+        height: '60px'
+      }
     },
     {
-      icon: Plus,
       title: 'Adicionar Alimentos',
       description: 'Personalize sua lista de alimentos',
       path: '/dashboard/add-food',
       color: 'bg-success text-success-foreground',
       gradient: 'bg-gradient-primary',
-      image: addFoodImg
+      iconStyle: {
+        backgroundImage: `url(${dashboardIcons})`,
+        backgroundPosition: '50% 100%',
+        backgroundSize: '200%',
+        width: '60px',
+        height: '60px'
+      }
     }
   ];
 
@@ -60,19 +76,15 @@ const Dashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {features.map(({ icon: Icon, title, description, path, gradient, image }) => (
+          {features.map(({ title, description, path, gradient, iconStyle }) => (
             <Link key={path} to={path}>
               <Card className="hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden group h-full">
-                <div className="relative aspect-square overflow-hidden">
-                  <img 
-                    src={image} 
-                    alt={title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-background to-muted flex items-center justify-center">
+                  <div 
+                    style={iconStyle}
+                    className="group-hover:scale-110 transition-transform duration-300"
                   />
-                  <div className={`absolute inset-0 ${gradient} opacity-40 group-hover:opacity-30 transition-opacity`} />
-                  <div className={`absolute top-4 left-4 w-12 h-12 rounded-lg ${gradient} flex items-center justify-center shadow-lg`}>
-                    <Icon className="text-white" size={24} />
-                  </div>
+                  <div className={`absolute inset-0 ${gradient} opacity-20 group-hover:opacity-10 transition-opacity`} />
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold text-foreground mb-2">
