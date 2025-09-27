@@ -2,10 +2,10 @@ import { Link } from 'react-router-dom';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Card } from '@/components/ui/card';
 import { Droplets, Utensils, Ruler, Plus } from 'lucide-react';
-import waterIntakeImg from '@/assets/water-intake.jpg';
-import foodSubstitutionImg from '@/assets/food-substitution.jpg';
-import measurementsImg from '@/assets/measurements.jpg';
-import addFoodImg from '@/assets/add-food.jpg';
+import waterIntakeImg from '@/assets/water-icon.jpg';
+import foodSubstitutionImg from '@/assets/food-substitution-icon.jpg';
+import measurementsImg from '@/assets/measurements-icon.jpg';
+import addFoodImg from '@/assets/add-food-icon.jpg';
 
 const Dashboard = () => {
   const features = [
