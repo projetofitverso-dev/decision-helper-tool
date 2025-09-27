@@ -30,22 +30,10 @@ const Help = () => {
 
   const supportOptions = [
     {
-      icon: MessageCircle,
-      title: "Chat ao Vivo",
-      description: "Converse com nossa equipe de suporte",
-      action: "Iniciar Chat"
-    },
-    {
       icon: Mail,
       title: "Email",
       description: "Envie-nos um email para suporte@fitverso.com",
       action: "Enviar Email"
-    },
-    {
-      icon: Phone,
-      title: "Telefone",
-      description: "Ligue para (11) 1234-5678",
-      action: "Ligar Agora"
     }
   ];
 
@@ -54,11 +42,6 @@ const Help = () => {
       icon: Book,
       title: "Guia do Usuário",
       description: "Manual completo de uso da plataforma"
-    },
-    {
-      icon: Users,
-      title: "Comunidade",
-      description: "Participe do nosso fórum de discussão"
     },
     {
       icon: HelpCircle,
@@ -104,7 +87,7 @@ const Help = () => {
         {/* Support Options */}
         <div className="space-y-4">
           <h2 className="text-2xl font-semibold text-foreground">Fale Conosco</h2>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-1 max-w-md mx-auto">
             {supportOptions.map((option, index) => (
               <Card key={index} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
@@ -133,7 +116,7 @@ const Help = () => {
         {/* Resources Section */}
         <div className="space-y-4">
           <h2 className="text-2xl font-semibold text-foreground">Recursos Úteis</h2>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-2 gap-4">
             {resources.map((resource, index) => (
               <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer">
                 <CardHeader>
