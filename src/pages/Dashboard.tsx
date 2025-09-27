@@ -59,18 +59,18 @@ const Dashboard = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {features.map(({ icon: Icon, title, description, path, gradient, image }) => (
             <Link key={path} to={path}>
-              <Card className="hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden group">
-                <div className="relative h-48 overflow-hidden">
+              <Card className="hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden group h-full">
+                <div className="relative aspect-square overflow-hidden">
                   <img 
                     src={image} 
                     alt={title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
                   <div className={`absolute inset-0 ${gradient} opacity-40 group-hover:opacity-30 transition-opacity`} />
-                  <div className={`absolute top-4 left-4 w-12 h-12 rounded-lg ${gradient} flex items-center justify-center`}>
+                  <div className={`absolute top-4 left-4 w-12 h-12 rounded-lg ${gradient} flex items-center justify-center shadow-lg`}>
                     <Icon className="text-white" size={24} />
                   </div>
                 </div>
