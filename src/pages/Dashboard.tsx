@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Card } from '@/components/ui/card';
-import dashboardIcons from '@/assets/dashboard-icons.png';
+import waterIntakeImg from '@/assets/water-intake.jpg';
+import foodSubstitutionImg from '@/assets/food-substitution.jpg';
+import measurementsImg from '@/assets/measurements.jpg';
+import addFoodImg from '@/assets/add-food.jpg';
 
 const Dashboard = () => {
   const features = [
@@ -11,13 +14,7 @@ const Dashboard = () => {
       path: '/dashboard/water',
       color: 'bg-water text-water-foreground',
       gradient: 'bg-gradient-water',
-      iconStyle: {
-        backgroundImage: `url(${dashboardIcons})`,
-        backgroundPosition: '0% 0%',
-        backgroundSize: '200%',
-        width: '60px',
-        height: '60px'
-      }
+      image: waterIntakeImg
     },
     {
       title: 'Lista de Substituição',
@@ -25,13 +22,7 @@ const Dashboard = () => {
       path: '/dashboard/substitution',
       color: 'bg-primary text-primary-foreground',
       gradient: 'bg-gradient-primary',
-      iconStyle: {
-        backgroundImage: `url(${dashboardIcons})`,
-        backgroundPosition: '100% 0%',
-        backgroundSize: '200%',
-        width: '60px',
-        height: '60px'
-      }
+      image: foodSubstitutionImg
     },
     {
       title: 'Medidas Antropométricas',
@@ -39,13 +30,7 @@ const Dashboard = () => {
       path: '/dashboard/measurements',
       color: 'bg-secondary text-secondary-foreground',
       gradient: 'bg-gradient-primary',
-      iconStyle: {
-        backgroundImage: `url(${dashboardIcons})`,
-        backgroundPosition: '100% 50%',
-        backgroundSize: '200%',
-        width: '60px',
-        height: '60px'
-      }
+      image: measurementsImg
     },
     {
       title: 'Adicionar Alimentos',
@@ -53,13 +38,7 @@ const Dashboard = () => {
       path: '/dashboard/add-food',
       color: 'bg-success text-success-foreground',
       gradient: 'bg-gradient-primary',
-      iconStyle: {
-        backgroundImage: `url(${dashboardIcons})`,
-        backgroundPosition: '50% 100%',
-        backgroundSize: '200%',
-        width: '60px',
-        height: '60px'
-      }
+      image: addFoodImg
     }
   ];
 
@@ -76,15 +55,16 @@ const Dashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {features.map(({ title, description, path, gradient, iconStyle }) => (
+          {features.map(({ title, description, path, gradient, image }) => (
             <Link key={path} to={path}>
               <Card className="hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden group h-full">
-                <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-background to-muted flex items-center justify-center">
-                  <div 
-                    style={iconStyle}
-                    className="group-hover:scale-110 transition-transform duration-300"
+                <div className="relative aspect-square overflow-hidden">
+                  <img 
+                    src={image} 
+                    alt={title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
-                  <div className={`absolute inset-0 ${gradient} opacity-20 group-hover:opacity-10 transition-opacity`} />
+                  <div className={`absolute inset-0 ${gradient} opacity-20 group-hover:opacity-30 transition-opacity`} />
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold text-foreground mb-2">
