@@ -27,7 +27,7 @@ const FoodSubstitution = () => {
 
   const foodOptions = {
     carbs: ['Arroz Branco cozido', 'Arroz integral cozido', 'Batata inglesa cozida', 'Batata, doce, cozida', 'Macarrão (cozido)', 'Mandioca cozida', 'Mandioquinha', 'Cuscuz de milho cozido', 'Abóbora cabotian cozida', 'Milho, verde, enlatado, drenado', 'Pão francês', 'Tapioca (Terrinha)', 'Quinoa cozida', 'Pão de forma tradicional', 'Aveia', 'Farofa pronta - Yoki®', 'Farinha tradicional', 'Pão de forma integral'],
-    protein: ['Frango', 'Carne bovina', 'Peixe', 'Ovo', 'Tofu', 'Queijo'],
+    protein: ['Carne, bovina sem gordura', 'Peito de frango', 'Porco, lombo, assado', 'Frango, sobrecoxa, sem pele, assada', 'Atum, conserva em óleo', 'Filé de Merluza assado', 'Sardinha assada', 'Salmão sem pele grelhado', 'Whey concentrado'],
     fats: ['Azeite', 'Óleo de coco', 'Abacate', 'Castanhas', 'Amendoim'],
     fruits: ['Banana', 'Maçã', 'Laranja', 'Morango', 'Uva', 'Manga'],
     legumes: ['Feijão', 'Lentilha', 'Grão-de-bico', 'Ervilha', 'Soja'],
