@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -10,6 +10,65 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 
 const MyProfile = () => {
+  const [birthdate, setBirthdate] = useState('');
+  const [height, setHeight] = useState('');
+  const [weight, setWeight] = useState('');
+  const [gender, setGender] = useState('');
+  const [age, setAge] = useState<number | null>(null);
+  const [tmb, setTmb] = useState<{ harrisBenedict: number | null; mifflin: number | null }>({
+    harrisBenedict: null,
+    mifflin: null
+  });
+
+  // Calcula idade automaticamente
+  useEffect(() => {
+    if (birthdate) {
+      const today = new Date();
+      const birth = new Date(birthdate);
+      let calculatedAge = today.getFullYear() - birth.getFullYear();
+      const monthDiff = today.getMonth() - birth.getMonth();
+      
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        calculatedAge--;
+      }
+      
+      setAge(calculatedAge);
+    } else {
+      setAge(null);
+    }
+  }, [birthdate]);
+
+  // Calcula TMB usando as fórmulas
+  useEffect(() => {
+    if (age && height && weight && gender) {
+      const h = parseFloat(height);
+      const w = parseFloat(weight);
+      
+      // Fórmula de Harris-Benedict
+      let harrisBenedict: number;
+      if (gender === 'male') {
+        harrisBenedict = 88.362 + (13.397 * w) + (4.799 * h) - (5.677 * age);
+      } else {
+        harrisBenedict = 447.593 + (9.247 * w) + (3.098 * h) - (4.330 * age);
+      }
+      
+      // Fórmula de Mifflin-St Jeor
+      let mifflin: number;
+      if (gender === 'male') {
+        mifflin = (10 * w) + (6.25 * h) - (5 * age) + 5;
+      } else {
+        mifflin = (10 * w) + (6.25 * h) - (5 * age) - 161;
+      }
+      
+      setTmb({
+        harrisBenedict: Math.round(harrisBenedict),
+        mifflin: Math.round(mifflin)
+      });
+    } else {
+      setTmb({ harrisBenedict: null, mifflin: null });
+    }
+  }, [age, height, weight, gender]);
+
   return (
     <DashboardLayout>
       <div className="max-w-4xl mx-auto space-y-6">
@@ -105,56 +164,83 @@ const MyProfile = () => {
               <TabsContent value="health" className="space-y-4 mt-6">
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
+                    <Label htmlFor="health-birthdate" className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      Data de Nascimento
+                    </Label>
+                    <Input 
+                      id="health-birthdate" 
+                      type="date" 
+                      value={birthdate}
+                      onChange={(e) => setBirthdate(e.target.value)}
+                    />
+                  </div>
+
+                  {age !== null && (
+                    <div className="space-y-2">
+                      <Label>Idade</Label>
+                      <div className="h-10 px-3 rounded-md border border-input bg-muted/50 flex items-center">
+                        <span className="text-foreground font-medium">{age} anos</span>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="gender">Sexo</Label>
+                    <select 
+                      id="gender" 
+                      className="w-full h-10 px-3 rounded-md border border-input bg-background"
+                      value={gender}
+                      onChange={(e) => setGender(e.target.value)}
+                    >
+                      <option value="">Selecione...</option>
+                      <option value="male">Masculino</option>
+                      <option value="female">Feminino</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-2">
                     <Label htmlFor="height">Altura (cm)</Label>
-                    <Input id="height" type="number" placeholder="170" />
+                    <Input 
+                      id="height" 
+                      type="number" 
+                      placeholder="170"
+                      value={height}
+                      onChange={(e) => setHeight(e.target.value)}
+                    />
                   </div>
                   
                   <div className="space-y-2">
                     <Label htmlFor="weight">Peso (kg)</Label>
-                    <Input id="weight" type="number" placeholder="70" />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="activity">Nível de Atividade</Label>
-                    <select id="activity" className="w-full h-10 px-3 rounded-md border border-input bg-background">
-                      <option value="">Selecione...</option>
-                      <option value="sedentary">Sedentário</option>
-                      <option value="light">Levemente Ativo</option>
-                      <option value="moderate">Moderadamente Ativo</option>
-                      <option value="very">Muito Ativo</option>
-                    </select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="diet">Tipo de Dieta</Label>
-                    <select id="diet" className="w-full h-10 px-3 rounded-md border border-input bg-background">
-                      <option value="">Selecione...</option>
-                      <option value="regular">Regular</option>
-                      <option value="vegetarian">Vegetariana</option>
-                      <option value="vegan">Vegana</option>
-                      <option value="keto">Cetogênica</option>
-                      <option value="paleo">Paleo</option>
-                    </select>
-                  </div>
-                  
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="allergies">Alergias ou Restrições Alimentares</Label>
-                    <Textarea 
-                      id="allergies" 
-                      placeholder="Descreva suas alergias ou restrições alimentares..."
-                      className="min-h-[100px]"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="conditions">Condições de Saúde</Label>
-                    <Textarea 
-                      id="conditions" 
-                      placeholder="Descreva condições de saúde relevantes..."
-                      className="min-h-[100px]"
+                    <Input 
+                      id="weight" 
+                      type="number" 
+                      placeholder="70"
+                      value={weight}
+                      onChange={(e) => setWeight(e.target.value)}
                     />
                   </div>
                 </div>
+
+                {tmb.harrisBenedict !== null && tmb.mifflin !== null && (
+                  <div className="mt-6 p-4 rounded-lg bg-primary/5 border border-primary/20">
+                    <h3 className="font-semibold text-lg mb-3 text-foreground">Gasto Calórico Diário (TMB)</h3>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Fórmula de Harris-Benedict:</span>
+                        <span className="font-bold text-foreground text-lg">{tmb.harrisBenedict} kcal/dia</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Fórmula de Mifflin-St Jeor:</span>
+                        <span className="font-bold text-foreground text-lg">{tmb.mifflin} kcal/dia</span>
+                      </div>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-3">
+                      * TMB (Taxa Metabólica Basal) representa o gasto calórico em repouso. 
+                      Para obter o gasto total, multiplique por seu fator de atividade física.
+                    </p>
+                  </div>
+                )}
                 
                 <div className="flex justify-end">
                   <Button className="bg-gradient-to-r from-primary to-primary-glow hover:opacity-90">
