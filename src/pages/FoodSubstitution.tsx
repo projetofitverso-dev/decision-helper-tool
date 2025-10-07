@@ -26,7 +26,7 @@ const FoodSubstitution = () => {
   ];
 
   const foodOptions = {
-    carbs: ['Arroz branco', 'Arroz integral', 'Macarrão', 'Batata', 'Pão francês', 'Aveia'],
+    carbs: ['Arroz Branco cozido', 'Arroz integral cozido', 'Batata inglesa cozida', 'Batata, doce, cozida', 'Macarrão (cozido)', 'Mandioca cozida', 'Mandioquinha', 'Cuscuz de milho cozido', 'Abóbora, cabotian, cozida', 'Milho, verde, enlatado, drenado', 'Pão francês', 'Tapioca (Terrinha)', 'Quinoa cozida', 'Pão de forma tradicional', 'Aveia', 'Farofa pronta - Yoki®', 'Farinha tradicional', 'Pão, trigo, forma, integral'],
     protein: ['Frango', 'Carne bovina', 'Peixe', 'Ovo', 'Tofu', 'Queijo'],
     fats: ['Azeite', 'Óleo de coco', 'Abacate', 'Castanhas', 'Amendoim'],
     fruits: ['Banana', 'Maçã', 'Laranja', 'Morango', 'Uva', 'Manga'],
