@@ -31,7 +31,7 @@ const FoodSubstitution = () => {
     fats: ['Abacate, cru', 'Amendoim, torrado, salgado', 'Amêndoa, torrada, salgada', 'Castanha-de-caju, torrada, salgada', 'Castanha-do-Brasil, crua', 'Coco, cru', 'Pasta de Amendoim'],
     fruits: ['Banana', 'Maçã', 'Laranja', 'Morango', 'Uva', 'Manga'],
     legumes: ['Feijão', 'Lentilha', 'Grão-de-bico', 'Ervilha', 'Soja'],
-    dairy: ['Leite', 'Iogurte', 'Queijo', 'Requeijão', 'Manteiga']
+    dairy: ['Creme de ricota', 'Iogurte integral', 'Iogurte natural desnatado', 'Leite integral', 'Leite desnatado', 'Queijo, minas, frescal', 'Queijo, mussarela', 'Queijo, parmesão', 'Queijo, prato', 'Queijo, ricota', 'Requeijão Light', 'Requeijão']
   };
 
   const handleCalculate = () => {
