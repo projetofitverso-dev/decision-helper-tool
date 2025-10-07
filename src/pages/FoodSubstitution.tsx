@@ -29,7 +29,7 @@ const FoodSubstitution = () => {
     carbs: ['Arroz Branco cozido', 'Arroz integral cozido', 'Batata inglesa cozida', 'Batata, doce, cozida', 'Macarrão (cozido)', 'Mandioca cozida', 'Mandioquinha', 'Cuscuz de milho cozido', 'Abóbora cabotian cozida', 'Milho, verde, enlatado, drenado', 'Pão francês', 'Tapioca (Terrinha)', 'Quinoa cozida', 'Pão de forma tradicional', 'Aveia', 'Farofa pronta - Yoki®', 'Farinha tradicional', 'Pão de forma integral'],
     protein: ['Carne, bovina sem gordura', 'Peito de frango', 'Porco, lombo, assado', 'Frango, sobrecoxa, sem pele, assada', 'Atum, conserva em óleo', 'Filé de Merluza assado', 'Sardinha assada', 'Salmão sem pele grelhado', 'Whey concentrado'],
     fats: ['Abacate, cru', 'Amendoim, torrado, salgado', 'Amêndoa, torrada, salgada', 'Castanha-de-caju, torrada, salgada', 'Castanha-do-Brasil, crua', 'Coco, cru', 'Pasta de Amendoim'],
-    fruits: ['Banana', 'Maçã', 'Laranja', 'Morango', 'Uva', 'Manga'],
+    fruits: ['Abacaxi', 'Acerola', 'Ameixa', 'Banana, da terra', 'Banana, nanica', 'Banana, prata', 'Banana, maçã', 'Banana, ouro', 'Goiaba, vermelha, com casca', 'Jabuticaba', 'Kiwi', 'Laranja, lima', 'Laranja, pêra', 'Limão, tahiti', 'Maçã, Argentina, com casca', 'Maçã, Fuji, com casca', 'Mamão, Formosa', 'Mamão, Papaia', 'Manga, Palmer', 'Maracujá', 'Melancia', 'Mexerica, Murcote', 'Morango', 'Pêra, Williams', 'Uva, Itália', 'Uva, Rubi'],
     legumes: ['Feijão', 'Lentilha', 'Grão-de-bico', 'Ervilha', 'Soja'],
     dairy: ['Creme de ricota', 'Iogurte integral', 'Iogurte natural desnatado', 'Leite integral', 'Leite desnatado', 'Queijo, minas, frescal', 'Queijo, mussarela', 'Queijo, parmesão', 'Queijo, prato', 'Queijo, ricota', 'Requeijão Light', 'Requeijão']
   };
