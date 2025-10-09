@@ -258,64 +258,41 @@ const MyProfile = () => {
                   </div>
                 </div>
 
-                {tmb.harrisBenedict !== null && tmb.mifflin !== null && (
-                  <div className="mt-6 p-4 rounded-lg bg-primary/5 border border-primary/20">
-                    <h3 className="font-semibold text-lg mb-3 text-foreground">Taxa Metabólica Basal (TMB)</h3>
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Fórmula de Harris-Benedict:</span>
-                        <span className="font-bold text-foreground text-lg">{tmb.harrisBenedict} kcal/dia</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Fórmula de Mifflin-St Jeor:</span>
-                        <span className="font-bold text-foreground text-lg">{tmb.mifflin} kcal/dia</span>
-                      </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-3">
-                      * TMB representa o gasto calórico em repouso absoluto.
-                    </p>
-                  </div>
-                )}
-
                 {get !== null && (
-                  <div className="mt-4 p-5 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/30">
-                    <h3 className="font-semibold text-xl mb-4 text-foreground">Suas Necessidades Calóricas</h3>
+                  <div className="mt-6 p-5 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/30">
+                    <h3 className="font-semibold text-xl mb-4 text-foreground text-center">Quantas Calorias Consumir por Dia</h3>
                     
-                    <div className="mb-4 p-3 rounded-md bg-background/50">
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground font-medium">Gasto Energético Total (GET):</span>
-                        <span className="font-bold text-primary text-xl">{get} kcal/dia</span>
-                      </div>
-                    </div>
-
                     <div className="space-y-3">
-                      <div className="p-3 rounded-md bg-red-500/10 border border-red-500/30">
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="font-semibold text-foreground">Perder Peso</span>
-                          <span className="font-bold text-lg text-foreground">{get - 500} kcal/dia</span>
+                      <div className="p-4 rounded-lg bg-red-500/10 border-2 border-red-500/30">
+                        <div className="text-center">
+                          <span className="text-sm font-medium text-muted-foreground block mb-1">Para Perder Peso</span>
+                          <span className="font-bold text-3xl text-foreground block">{get - 500}</span>
+                          <span className="text-sm text-muted-foreground">calorias por dia</span>
+                          <p className="text-xs text-muted-foreground mt-2">Perda de aproximadamente 0,5 kg por semana</p>
                         </div>
-                        <p className="text-xs text-muted-foreground">Déficit de 500 kcal (~0,5 kg por semana)</p>
                       </div>
 
-                      <div className="p-3 rounded-md bg-blue-500/10 border border-blue-500/30">
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="font-semibold text-foreground">Manutenção</span>
-                          <span className="font-bold text-lg text-foreground">{get} kcal/dia</span>
+                      <div className="p-4 rounded-lg bg-blue-500/10 border-2 border-blue-500/30">
+                        <div className="text-center">
+                          <span className="text-sm font-medium text-muted-foreground block mb-1">Para Manter o Peso</span>
+                          <span className="font-bold text-3xl text-foreground block">{get}</span>
+                          <span className="text-sm text-muted-foreground">calorias por dia</span>
+                          <p className="text-xs text-muted-foreground mt-2">Mantém seu peso atual</p>
                         </div>
-                        <p className="text-xs text-muted-foreground">Manter o peso atual</p>
                       </div>
 
-                      <div className="p-3 rounded-md bg-green-500/10 border border-green-500/30">
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="font-semibold text-foreground">Ganhar Peso</span>
-                          <span className="font-bold text-lg text-foreground">{get + 500} kcal/dia</span>
+                      <div className="p-4 rounded-lg bg-green-500/10 border-2 border-green-500/30">
+                        <div className="text-center">
+                          <span className="text-sm font-medium text-muted-foreground block mb-1">Para Ganhar Peso</span>
+                          <span className="font-bold text-3xl text-foreground block">{get + 500}</span>
+                          <span className="text-sm text-muted-foreground">calorias por dia</span>
+                          <p className="text-xs text-muted-foreground mt-2">Ganho de aproximadamente 0,5 kg por semana</p>
                         </div>
-                        <p className="text-xs text-muted-foreground">Superávit de 500 kcal (~0,5 kg por semana)</p>
                       </div>
                     </div>
 
-                    <p className="text-xs text-muted-foreground mt-4 italic">
-                      * Estes valores são estimativas. Consulte um nutricionista para um plano personalizado.
+                    <p className="text-xs text-muted-foreground mt-4 text-center italic">
+                      * Estes valores são estimativas baseadas em fórmulas científicas. Consulte um nutricionista para um plano personalizado.
                     </p>
                   </div>
                 )}
