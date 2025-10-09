@@ -14,11 +14,13 @@ const MyProfile = () => {
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
   const [gender, setGender] = useState('');
+  const [activityFactor, setActivityFactor] = useState('');
   const [age, setAge] = useState<number | null>(null);
   const [tmb, setTmb] = useState<{ harrisBenedict: number | null; mifflin: number | null }>({
     harrisBenedict: null,
     mifflin: null
   });
+  const [get, setGet] = useState<number | null>(null);
 
   // Calcula idade automaticamente
   useEffect(() => {
@@ -68,6 +70,16 @@ const MyProfile = () => {
       setTmb({ harrisBenedict: null, mifflin: null });
     }
   }, [age, height, weight, gender]);
+
+  // Calcula GET (Gasto Energético Total) baseado no fator de atividade
+  useEffect(() => {
+    if (tmb.mifflin && activityFactor) {
+      const factor = parseFloat(activityFactor);
+      setGet(Math.round(tmb.mifflin * factor));
+    } else {
+      setGet(null);
+    }
+  }, [tmb.mifflin, activityFactor]);
 
   return (
     <DashboardLayout>
@@ -224,11 +236,28 @@ const MyProfile = () => {
                       onChange={(e) => setWeight(e.target.value)}
                     />
                   </div>
+
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="activity">Nível de Atividade Física</Label>
+                    <select 
+                      id="activity" 
+                      className="w-full h-10 px-3 rounded-md border border-input bg-background"
+                      value={activityFactor}
+                      onChange={(e) => setActivityFactor(e.target.value)}
+                    >
+                      <option value="">Selecione seu nível de atividade...</option>
+                      <option value="1.2">Sedentário (pouco ou nenhum exercício)</option>
+                      <option value="1.375">Levemente ativo (exercício leve 1-3 dias/semana)</option>
+                      <option value="1.55">Moderadamente ativo (exercício moderado 3-5 dias/semana)</option>
+                      <option value="1.725">Muito ativo (exercício intenso 6-7 dias/semana)</option>
+                      <option value="1.9">Extremamente ativo (exercício intenso diário + trabalho físico)</option>
+                    </select>
+                  </div>
                 </div>
 
                 {tmb.harrisBenedict !== null && tmb.mifflin !== null && (
                   <div className="mt-6 p-4 rounded-lg bg-primary/5 border border-primary/20">
-                    <h3 className="font-semibold text-lg mb-3 text-foreground">Gasto Calórico Diário (TMB)</h3>
+                    <h3 className="font-semibold text-lg mb-3 text-foreground">Taxa Metabólica Basal (TMB)</h3>
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
                         <span className="text-muted-foreground">Fórmula de Harris-Benedict:</span>
@@ -240,8 +269,50 @@ const MyProfile = () => {
                       </div>
                     </div>
                     <p className="text-sm text-muted-foreground mt-3">
-                      * TMB (Taxa Metabólica Basal) representa o gasto calórico em repouso. 
-                      Para obter o gasto total, multiplique por seu fator de atividade física.
+                      * TMB representa o gasto calórico em repouso absoluto.
+                    </p>
+                  </div>
+                )}
+
+                {get !== null && (
+                  <div className="mt-4 p-5 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/30">
+                    <h3 className="font-semibold text-xl mb-4 text-foreground">Suas Necessidades Calóricas</h3>
+                    
+                    <div className="mb-4 p-3 rounded-md bg-background/50">
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground font-medium">Gasto Energético Total (GET):</span>
+                        <span className="font-bold text-primary text-xl">{get} kcal/dia</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="p-3 rounded-md bg-red-500/10 border border-red-500/30">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="font-semibold text-foreground">Perder Peso</span>
+                          <span className="font-bold text-lg text-foreground">{get - 500} kcal/dia</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">Déficit de 500 kcal (~0,5 kg por semana)</p>
+                      </div>
+
+                      <div className="p-3 rounded-md bg-blue-500/10 border border-blue-500/30">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="font-semibold text-foreground">Manutenção</span>
+                          <span className="font-bold text-lg text-foreground">{get} kcal/dia</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">Manter o peso atual</p>
+                      </div>
+
+                      <div className="p-3 rounded-md bg-green-500/10 border border-green-500/30">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="font-semibold text-foreground">Ganhar Peso</span>
+                          <span className="font-bold text-lg text-foreground">{get + 500} kcal/dia</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">Superávit de 500 kcal (~0,5 kg por semana)</p>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-muted-foreground mt-4 italic">
+                      * Estes valores são estimativas. Consulte um nutricionista para um plano personalizado.
                     </p>
                   </div>
                 )}
