@@ -187,7 +187,10 @@ const MyProfile = () => {
                     </Label>
                     <div className="h-10 px-3 rounded-md border border-input bg-muted/50 flex items-center">
                       <span className="text-muted-foreground text-sm">
-                        {birthdate ? new Date(birthdate).toLocaleDateString('pt-BR') : 'Preencha em Dados Pessoais'}
+                        {birthdate ? (() => {
+                          const [year, month, day] = birthdate.split('-');
+                          return `${day}/${month}/${year}`;
+                        })() : 'Preencha em Dados Pessoais'}
                       </span>
                     </div>
                   </div>
