@@ -142,7 +142,12 @@ const MyProfile = () => {
                       <Calendar className="h-4 w-4 text-muted-foreground" />
                       Data de Nascimento
                     </Label>
-                    <Input id="birthdate" type="date" />
+                    <Input 
+                      id="birthdate" 
+                      type="date"
+                      value={birthdate}
+                      onChange={(e) => setBirthdate(e.target.value)}
+                    />
                   </div>
                   
                   <div className="space-y-2 md:col-span-2">
@@ -163,19 +168,6 @@ const MyProfile = () => {
               
               <TabsContent value="health" className="space-y-4 mt-6">
                 <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="health-birthdate" className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-muted-foreground" />
-                      Data de Nascimento
-                    </Label>
-                    <Input 
-                      id="health-birthdate" 
-                      type="date" 
-                      value={birthdate}
-                      onChange={(e) => setBirthdate(e.target.value)}
-                    />
-                  </div>
-
                   {age !== null && (
                     <div className="space-y-2">
                       <Label>Idade</Label>
