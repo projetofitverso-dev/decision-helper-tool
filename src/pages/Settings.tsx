@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Bell, Shield, Palette, Globe, Smartphone, Lock, Eye, Volume2 } from 'lucide-react';
+import { Bell, Palette, Globe, Volume2 } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 
@@ -19,11 +19,9 @@ const Settings = () => {
         </div>
 
         <Tabs defaultValue="notifications" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="notifications">Notificações</TabsTrigger>
             <TabsTrigger value="appearance">Aparência</TabsTrigger>
-            <TabsTrigger value="privacy">Privacidade</TabsTrigger>
-            <TabsTrigger value="account">Conta</TabsTrigger>
           </TabsList>
           
           <TabsContent value="notifications" className="space-y-4 mt-6">
@@ -160,157 +158,6 @@ const Settings = () => {
                     </p>
                   </div>
                   <Switch id="animations" defaultChecked />
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="privacy" className="space-y-4 mt-6">
-            <Card className="border-border/50 shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-primary" />
-                  Privacidade e Segurança
-                </CardTitle>
-                <CardDescription>
-                  Gerencie suas configurações de privacidade
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="profile-public" className="text-base flex items-center gap-2">
-                      <Eye className="h-4 w-4 text-muted-foreground" />
-                      Perfil Público
-                    </Label>
-                    <p className="text-sm text-muted-foreground">
-                      Permitir que outros usuários vejam seu perfil
-                    </p>
-                  </div>
-                  <Switch id="profile-public" />
-                </div>
-                
-                <Separator />
-                
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="share-progress" className="text-base">Compartilhar Progresso</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Compartilhar suas conquistas com amigos
-                    </p>
-                  </div>
-                  <Switch id="share-progress" />
-                </div>
-                
-                <Separator />
-                
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="data-collection" className="text-base">Coleta de Dados</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Permitir coleta anônima para melhorias
-                    </p>
-                  </div>
-                  <Switch id="data-collection" defaultChecked />
-                </div>
-                
-                <Separator />
-                
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="two-factor" className="text-base flex items-center gap-2">
-                      <Smartphone className="h-4 w-4 text-muted-foreground" />
-                      Autenticação em Duas Etapas
-                    </Label>
-                    <p className="text-sm text-muted-foreground">
-                      Adicione uma camada extra de segurança
-                    </p>
-                  </div>
-                  <Switch id="two-factor" />
-                </div>
-                
-                <Separator />
-                
-                <div className="space-y-3">
-                  <Button variant="outline" className="w-full flex items-center gap-2">
-                    <Lock className="h-4 w-4" />
-                    Alterar Senha
-                  </Button>
-                  <Button variant="outline" className="w-full">
-                    Baixar Meus Dados
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="account" className="space-y-4 mt-6">
-            <Card className="border-border/50 shadow-lg">
-              <CardHeader>
-                <CardTitle>Gerenciamento da Conta</CardTitle>
-                <CardDescription>
-                  Configurações avançadas da sua conta
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-3">
-                  <Label>Plano Atual</Label>
-                  <div className="p-4 rounded-lg bg-muted/50 border border-border">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-lg font-semibold">Plano Gratuito</span>
-                      <Button size="sm" className="bg-gradient-to-r from-primary to-primary-glow hover:opacity-90">
-                        Fazer Upgrade
-                      </Button>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Acesso a recursos básicos do FitVerso
-                    </p>
-                  </div>
-                </div>
-                
-                <Separator />
-                
-                <div className="space-y-3">
-                  <Label>Conexões</Label>
-                  <div className="space-y-2">
-                    <Button variant="outline" className="w-full justify-start">
-                      Conectar com Google Fit
-                    </Button>
-                    <Button variant="outline" className="w-full justify-start">
-                      Conectar com Apple Health
-                    </Button>
-                    <Button variant="outline" className="w-full justify-start">
-                      Conectar com Strava
-                    </Button>
-                  </div>
-                </div>
-                
-                <Separator />
-                
-                <div className="space-y-3">
-                  <Label>Exportar Dados</Label>
-                  <div className="space-y-2">
-                    <Button variant="outline" className="w-full">
-                      Exportar como CSV
-                    </Button>
-                    <Button variant="outline" className="w-full">
-                      Exportar como PDF
-                    </Button>
-                  </div>
-                </div>
-                
-                <Separator />
-                
-                <div className="space-y-3">
-                  <Label className="text-destructive">Zona de Perigo</Label>
-                  <div className="space-y-2">
-                    <Button variant="outline" className="w-full text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950">
-                      Desativar Conta Temporariamente
-                    </Button>
-                    <Button variant="outline" className="w-full text-destructive hover:bg-destructive/10">
-                      Excluir Conta Permanentemente
-                    </Button>
-                  </div>
                 </div>
               </CardContent>
             </Card>
