@@ -137,21 +137,6 @@ const Help = () => {
           </div>
         </div>
 
-        {/* Additional Help */}
-        <Card className="bg-muted/50">
-          <CardContent className="pt-6">
-            <div className="text-center space-y-4">
-              <HelpCircle className="h-12 w-12 text-primary mx-auto" />
-              <h3 className="text-xl font-semibold">Ainda precisa de ajuda?</h3>
-              <p className="text-muted-foreground max-w-md mx-auto">
-                Nossa equipe está pronta para ajudar você a aproveitar ao máximo o FitVerso.
-              </p>
-              <Button size="lg">
-                Entrar em Contato
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </DashboardLayout>
   );
