@@ -53,48 +53,12 @@ const Settings = () => {
                   
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
-                      <Label htmlFor="meal-reminder" className="text-base">Horário das Refeições</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Notificações nos horários das suas refeições
-                      </p>
-                    </div>
-                    <Switch id="meal-reminder" />
-                  </div>
-                  
-                  <Separator />
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label htmlFor="exercise-reminder" className="text-base">Lembrete de Exercícios</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Lembretes para manter sua rotina de exercícios
-                      </p>
-                    </div>
-                    <Switch id="exercise-reminder" defaultChecked />
-                  </div>
-                  
-                  <Separator />
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
                       <Label htmlFor="progress-updates" className="text-base">Atualizações de Progresso</Label>
                       <p className="text-sm text-muted-foreground">
                         Resumos semanais do seu progresso
                       </p>
                     </div>
                     <Switch id="progress-updates" defaultChecked />
-                  </div>
-                  
-                  <Separator />
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label htmlFor="tips" className="text-base">Dicas de Saúde</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Receba dicas diárias de saúde e bem-estar
-                      </p>
-                    </div>
-                    <Switch id="tips" />
                   </div>
                 </div>
                 
