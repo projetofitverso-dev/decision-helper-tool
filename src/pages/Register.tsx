@@ -1,23 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/components/auth/AuthLayout';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 
 const Register = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { signUp, user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    phone: '',
-    cpf: '',
-    address: '',
     password: '',
     confirmPassword: ''
   });
+
+  // Redirecionar se já estiver logado
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
@@ -26,7 +33,7 @@ const Register = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (formData.password !== formData.confirmPassword) {
@@ -38,13 +45,37 @@ const Register = () => {
       return;
     }
 
-    // Por enquanto, apenas simula o cadastro
-    localStorage.setItem('user', JSON.stringify({ name: formData.name, email: formData.email }));
+    if (formData.password.length < 6) {
+      toast({
+        title: "Erro",
+        description: "A senha deve ter pelo menos 6 caracteres",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    
+    const { error } = await signUp(formData.email, formData.password, formData.name);
+    
+    if (error) {
+      toast({
+        title: "Erro ao criar conta",
+        description: error.message === "User already registered" 
+          ? "Este email já está cadastrado" 
+          : error.message,
+        variant: "destructive"
+      });
+      setIsLoading(false);
+      return;
+    }
+
     toast({
-      title: "Sucesso!",
-      description: "Conta criada com sucesso",
+      title: "Conta criada com sucesso!",
+      description: "Você já pode fazer login",
     });
     navigate('/dashboard');
+    setIsLoading(false);
   };
 
   return (
@@ -64,6 +95,7 @@ const Register = () => {
             onChange={handleChange}
             className="mt-1"
             placeholder="João Silva"
+            disabled={isLoading}
           />
         </div>
 
@@ -78,48 +110,7 @@ const Register = () => {
             onChange={handleChange}
             className="mt-1"
             placeholder="seu@email.com"
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="phone">Telefone</Label>
-          <Input
-            id="phone"
-            name="phone"
-            type="tel"
-            required
-            value={formData.phone}
-            onChange={handleChange}
-            className="mt-1"
-            placeholder="(11) 99999-9999"
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="cpf">CPF</Label>
-          <Input
-            id="cpf"
-            name="cpf"
-            type="text"
-            required
-            value={formData.cpf}
-            onChange={handleChange}
-            className="mt-1"
-            placeholder="000.000.000-00"
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="address">Endereço</Label>
-          <Input
-            id="address"
-            name="address"
-            type="text"
-            required
-            value={formData.address}
-            onChange={handleChange}
-            className="mt-1"
-            placeholder="Rua, número, cidade"
+            disabled={isLoading}
           />
         </div>
 
@@ -135,6 +126,7 @@ const Register = () => {
             className="mt-1"
             placeholder="Mínimo 6 caracteres"
             minLength={6}
+            disabled={isLoading}
           />
         </div>
 
@@ -149,11 +141,23 @@ const Register = () => {
             onChange={handleChange}
             className="mt-1"
             placeholder="Digite a senha novamente"
+            disabled={isLoading}
           />
         </div>
 
-        <Button type="submit" className="w-full bg-gradient-primary hover:opacity-90">
-          Cadastrar
+        <Button 
+          type="submit" 
+          className="w-full bg-gradient-primary hover:opacity-90"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+              <span>Criando conta...</span>
+            </div>
+          ) : (
+            'Cadastrar'
+          )}
         </Button>
 
         <p className="text-center text-sm text-muted-foreground">

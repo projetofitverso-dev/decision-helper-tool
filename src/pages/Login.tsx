@@ -1,21 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/components/auth/AuthLayout';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 import { Mail, Lock, Eye, EyeOff, User, LogIn } from 'lucide-react';
 
 const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { signIn, user } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+
+  // Redirecionar se já estiver logado
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
@@ -28,11 +37,20 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simula um pequeno delay para feedback visual
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    const { error } = await signIn(formData.email, formData.password);
     
-    // Por enquanto, apenas simula o login
-    localStorage.setItem('user', JSON.stringify({ name: 'João Silva', email: formData.email }));
+    if (error) {
+      toast({
+        title: "Erro ao fazer login",
+        description: error.message === "Invalid login credentials" 
+          ? "Email ou senha incorretos" 
+          : error.message,
+        variant: "destructive"
+      });
+      setIsLoading(false);
+      return;
+    }
+
     toast({
       title: "Bem-vindo!",
       description: "Login realizado com sucesso",

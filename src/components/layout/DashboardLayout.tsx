@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, Home, User, Settings, HelpCircle, LogOut, Droplets, Utensils, Ruler, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -13,11 +14,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+  const { user, signOut } = useAuth();
 
-  const user = JSON.parse(localStorage.getItem('user') || '{"name": "Usuário"}');
+  const userName = user?.user_metadata?.nome_completo || user?.email || 'Usuário';
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
+  const handleLogout = async () => {
+    await signOut();
     toast({
       title: "Até logo!",
       description: "Logout realizado com sucesso",
@@ -62,7 +64,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         <div className="px-4 mb-4">
           <div className="bg-gradient-primary text-primary-foreground rounded-lg p-4">
             <p className="text-sm opacity-90">Bem-vindo</p>
-            <p className="font-semibold">{user.name}</p>
+            <p className="font-semibold truncate">{userName}</p>
           </div>
         </div>
 

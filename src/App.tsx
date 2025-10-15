@@ -3,12 +3,13 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "@/hooks/useAuth";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import WaterIntake from "./pages/WaterIntake";
 import FoodSubstitution from "./pages/FoodSubstitution";
-
 import Measurements from "./pages/Measurements";
 import AddFood from "./pages/AddFood";
 import MyProfile from "./pages/MyProfile";
@@ -20,28 +21,29 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/water" element={<WaterIntake />} />
-          <Route path="/dashboard/substitution" element={<FoodSubstitution />} />
-          
-          <Route path="/dashboard/measurements" element={<Measurements />} />
-          <Route path="/dashboard/add-food" element={<AddFood />} />
-          <Route path="/dashboard/profile" element={<MyProfile />} />
-          <Route path="/dashboard/settings" element={<Settings />} />
-          <Route path="/dashboard/help" element={<Help />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/dashboard/water" element={<ProtectedRoute><WaterIntake /></ProtectedRoute>} />
+            <Route path="/dashboard/substitution" element={<ProtectedRoute><FoodSubstitution /></ProtectedRoute>} />
+            <Route path="/dashboard/measurements" element={<ProtectedRoute><Measurements /></ProtectedRoute>} />
+            <Route path="/dashboard/add-food" element={<ProtectedRoute><AddFood /></ProtectedRoute>} />
+            <Route path="/dashboard/profile" element={<ProtectedRoute><MyProfile /></ProtectedRoute>} />
+            <Route path="/dashboard/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+            <Route path="/dashboard/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 
