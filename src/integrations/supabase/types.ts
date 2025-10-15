@@ -14,214 +14,214 @@ export type Database = {
   }
   public: {
     Tables: {
-      food_substitutions: {
+      alimentos: {
         Row: {
-          calories_difference: number | null
-          created_at: string | null
+          calorias: number | null
+          carboidratos: number | null
+          consumido_em: string | null
+          criado_em: string | null
+          gorduras: number | null
           id: string
-          original_food: string
-          reason: string | null
-          substitute_food: string
-          updated_at: string | null
-          user_id: string
+          nome: string
+          observacoes: string | null
+          proteina: number | null
+          tipo_refeicao: string | null
+          usuario_id: string
         }
         Insert: {
-          calories_difference?: number | null
-          created_at?: string | null
+          calorias?: number | null
+          carboidratos?: number | null
+          consumido_em?: string | null
+          criado_em?: string | null
+          gorduras?: number | null
           id?: string
-          original_food: string
-          reason?: string | null
-          substitute_food: string
-          updated_at?: string | null
-          user_id: string
+          nome: string
+          observacoes?: string | null
+          proteina?: number | null
+          tipo_refeicao?: string | null
+          usuario_id: string
         }
         Update: {
-          calories_difference?: number | null
-          created_at?: string | null
+          calorias?: number | null
+          carboidratos?: number | null
+          consumido_em?: string | null
+          criado_em?: string | null
+          gorduras?: number | null
           id?: string
-          original_food?: string
-          reason?: string | null
-          substitute_food?: string
-          updated_at?: string | null
-          user_id?: string
+          nome?: string
+          observacoes?: string | null
+          proteina?: number | null
+          tipo_refeicao?: string | null
+          usuario_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "food_substitutions_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "alimentos_usuario_id_fkey"
+            columns: ["usuario_id"]
             isOneToOne: false
-            referencedRelation: "profiles"
+            referencedRelation: "perfis"
             referencedColumns: ["id"]
           },
         ]
       }
-      foods: {
+      consumo_agua: {
         Row: {
-          calories: number | null
-          carbs: number | null
-          consumed_at: string | null
-          created_at: string | null
-          fats: number | null
+          criado_em: string | null
           id: string
-          meal_type: string | null
-          name: string
-          notes: string | null
-          protein: number | null
-          user_id: string
+          observacoes: string | null
+          quantidade_ml: number
+          registrado_em: string | null
+          usuario_id: string
         }
         Insert: {
-          calories?: number | null
-          carbs?: number | null
-          consumed_at?: string | null
-          created_at?: string | null
-          fats?: number | null
+          criado_em?: string | null
           id?: string
-          meal_type?: string | null
-          name: string
-          notes?: string | null
-          protein?: number | null
-          user_id: string
+          observacoes?: string | null
+          quantidade_ml: number
+          registrado_em?: string | null
+          usuario_id: string
         }
         Update: {
-          calories?: number | null
-          carbs?: number | null
-          consumed_at?: string | null
-          created_at?: string | null
-          fats?: number | null
+          criado_em?: string | null
           id?: string
-          meal_type?: string | null
-          name?: string
-          notes?: string | null
-          protein?: number | null
-          user_id?: string
+          observacoes?: string | null
+          quantidade_ml?: number
+          registrado_em?: string | null
+          usuario_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "foods_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "consumo_agua_usuario_id_fkey"
+            columns: ["usuario_id"]
             isOneToOne: false
-            referencedRelation: "profiles"
+            referencedRelation: "perfis"
             referencedColumns: ["id"]
           },
         ]
       }
-      measurements: {
+      medidas: {
         Row: {
-          arms: number | null
-          chest: number | null
-          created_at: string | null
-          hips: number | null
+          bracos: number | null
+          cintura: number | null
+          coxas: number | null
+          criado_em: string | null
           id: string
-          measured_at: string | null
-          notes: string | null
-          thighs: number | null
-          user_id: string
-          waist: number | null
-          weight: number
+          medido_em: string | null
+          observacoes: string | null
+          peito: number | null
+          peso: number
+          quadril: number | null
+          usuario_id: string
         }
         Insert: {
-          arms?: number | null
-          chest?: number | null
-          created_at?: string | null
-          hips?: number | null
+          bracos?: number | null
+          cintura?: number | null
+          coxas?: number | null
+          criado_em?: string | null
           id?: string
-          measured_at?: string | null
-          notes?: string | null
-          thighs?: number | null
-          user_id: string
-          waist?: number | null
-          weight: number
+          medido_em?: string | null
+          observacoes?: string | null
+          peito?: number | null
+          peso: number
+          quadril?: number | null
+          usuario_id: string
         }
         Update: {
-          arms?: number | null
-          chest?: number | null
-          created_at?: string | null
-          hips?: number | null
+          bracos?: number | null
+          cintura?: number | null
+          coxas?: number | null
+          criado_em?: string | null
           id?: string
-          measured_at?: string | null
-          notes?: string | null
-          thighs?: number | null
-          user_id?: string
-          waist?: number | null
-          weight?: number
+          medido_em?: string | null
+          observacoes?: string | null
+          peito?: number | null
+          peso?: number
+          quadril?: number | null
+          usuario_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "measurements_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "medidas_usuario_id_fkey"
+            columns: ["usuario_id"]
             isOneToOne: false
-            referencedRelation: "profiles"
+            referencedRelation: "perfis"
             referencedColumns: ["id"]
           },
         ]
       }
-      profiles: {
+      perfis: {
         Row: {
+          altura: number | null
+          atualizado_em: string | null
           avatar_url: string | null
-          created_at: string | null
-          date_of_birth: string | null
-          full_name: string | null
-          gender: string | null
-          height: number | null
+          criado_em: string | null
+          data_nascimento: string | null
+          genero: string | null
           id: string
-          target_weight: number | null
-          updated_at: string | null
+          nome_completo: string | null
+          peso_alvo: number | null
         }
         Insert: {
+          altura?: number | null
+          atualizado_em?: string | null
           avatar_url?: string | null
-          created_at?: string | null
-          date_of_birth?: string | null
-          full_name?: string | null
-          gender?: string | null
-          height?: number | null
+          criado_em?: string | null
+          data_nascimento?: string | null
+          genero?: string | null
           id: string
-          target_weight?: number | null
-          updated_at?: string | null
+          nome_completo?: string | null
+          peso_alvo?: number | null
         }
         Update: {
+          altura?: number | null
+          atualizado_em?: string | null
           avatar_url?: string | null
-          created_at?: string | null
-          date_of_birth?: string | null
-          full_name?: string | null
-          gender?: string | null
-          height?: number | null
+          criado_em?: string | null
+          data_nascimento?: string | null
+          genero?: string | null
           id?: string
-          target_weight?: number | null
-          updated_at?: string | null
+          nome_completo?: string | null
+          peso_alvo?: number | null
         }
         Relationships: []
       }
-      water_intake: {
+      substituicoes_alimentos: {
         Row: {
-          amount_ml: number
-          created_at: string | null
+          alimento_original: string
+          alimento_substituto: string
+          atualizado_em: string | null
+          criado_em: string | null
+          diferenca_calorias: number | null
           id: string
-          notes: string | null
-          recorded_at: string | null
-          user_id: string
+          motivo: string | null
+          usuario_id: string
         }
         Insert: {
-          amount_ml: number
-          created_at?: string | null
+          alimento_original: string
+          alimento_substituto: string
+          atualizado_em?: string | null
+          criado_em?: string | null
+          diferenca_calorias?: number | null
           id?: string
-          notes?: string | null
-          recorded_at?: string | null
-          user_id: string
+          motivo?: string | null
+          usuario_id: string
         }
         Update: {
-          amount_ml?: number
-          created_at?: string | null
+          alimento_original?: string
+          alimento_substituto?: string
+          atualizado_em?: string | null
+          criado_em?: string | null
+          diferenca_calorias?: number | null
           id?: string
-          notes?: string | null
-          recorded_at?: string | null
-          user_id?: string
+          motivo?: string | null
+          usuario_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "water_intake_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "substituicoes_alimentos_usuario_id_fkey"
+            columns: ["usuario_id"]
             isOneToOne: false
-            referencedRelation: "profiles"
+            referencedRelation: "perfis"
             referencedColumns: ["id"]
           },
         ]
