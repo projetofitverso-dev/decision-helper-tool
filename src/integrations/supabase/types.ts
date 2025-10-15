@@ -14,7 +14,218 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      food_substitutions: {
+        Row: {
+          calories_difference: number | null
+          created_at: string | null
+          id: string
+          original_food: string
+          reason: string | null
+          substitute_food: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          calories_difference?: number | null
+          created_at?: string | null
+          id?: string
+          original_food: string
+          reason?: string | null
+          substitute_food: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          calories_difference?: number | null
+          created_at?: string | null
+          id?: string
+          original_food?: string
+          reason?: string | null
+          substitute_food?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "food_substitutions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      foods: {
+        Row: {
+          calories: number | null
+          carbs: number | null
+          consumed_at: string | null
+          created_at: string | null
+          fats: number | null
+          id: string
+          meal_type: string | null
+          name: string
+          notes: string | null
+          protein: number | null
+          user_id: string
+        }
+        Insert: {
+          calories?: number | null
+          carbs?: number | null
+          consumed_at?: string | null
+          created_at?: string | null
+          fats?: number | null
+          id?: string
+          meal_type?: string | null
+          name: string
+          notes?: string | null
+          protein?: number | null
+          user_id: string
+        }
+        Update: {
+          calories?: number | null
+          carbs?: number | null
+          consumed_at?: string | null
+          created_at?: string | null
+          fats?: number | null
+          id?: string
+          meal_type?: string | null
+          name?: string
+          notes?: string | null
+          protein?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "foods_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      measurements: {
+        Row: {
+          arms: number | null
+          chest: number | null
+          created_at: string | null
+          hips: number | null
+          id: string
+          measured_at: string | null
+          notes: string | null
+          thighs: number | null
+          user_id: string
+          waist: number | null
+          weight: number
+        }
+        Insert: {
+          arms?: number | null
+          chest?: number | null
+          created_at?: string | null
+          hips?: number | null
+          id?: string
+          measured_at?: string | null
+          notes?: string | null
+          thighs?: number | null
+          user_id: string
+          waist?: number | null
+          weight: number
+        }
+        Update: {
+          arms?: number | null
+          chest?: number | null
+          created_at?: string | null
+          hips?: number | null
+          id?: string
+          measured_at?: string | null
+          notes?: string | null
+          thighs?: number | null
+          user_id?: string
+          waist?: number | null
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "measurements_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          date_of_birth: string | null
+          full_name: string | null
+          gender: string | null
+          height: number | null
+          id: string
+          target_weight: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          date_of_birth?: string | null
+          full_name?: string | null
+          gender?: string | null
+          height?: number | null
+          id: string
+          target_weight?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          date_of_birth?: string | null
+          full_name?: string | null
+          gender?: string | null
+          height?: number | null
+          id?: string
+          target_weight?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      water_intake: {
+        Row: {
+          amount_ml: number
+          created_at: string | null
+          id: string
+          notes: string | null
+          recorded_at: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_ml: number
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          recorded_at?: string | null
+          user_id: string
+        }
+        Update: {
+          amount_ml?: number
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          recorded_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "water_intake_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
