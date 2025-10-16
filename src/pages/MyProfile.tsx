@@ -105,7 +105,7 @@ const MyProfile = () => {
       
       // Fórmula de Harris-Benedict
       let harrisBenedict: number;
-      if (gender === 'male') {
+      if (gender === 'masculino') {
         harrisBenedict = 88.362 + (13.397 * w) + (4.799 * h) - (5.677 * age);
       } else {
         harrisBenedict = 447.593 + (9.247 * w) + (3.098 * h) - (4.330 * age);
@@ -113,7 +113,7 @@ const MyProfile = () => {
       
       // Fórmula de Mifflin-St Jeor
       let mifflin: number;
-      if (gender === 'male') {
+      if (gender === 'masculino') {
         mifflin = (10 * w) + (6.25 * h) - (5 * age) + 5;
       } else {
         mifflin = (10 * w) + (6.25 * h) - (5 * age) - 161;
@@ -410,8 +410,8 @@ const MyProfile = () => {
                       onChange={(e) => setGender(e.target.value)}
                     >
                       <option value="">Selecione...</option>
-                      <option value="male">Masculino</option>
-                      <option value="female">Feminino</option>
+                      <option value="masculino">Masculino</option>
+                      <option value="feminino">Feminino</option>
                     </select>
                   </div>
 
