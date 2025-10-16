@@ -5,22 +5,79 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Camera, Mail, Phone, User, Calendar, MapPin } from 'lucide-react';
+import { Camera, Mail, Phone, User, Calendar, MapPin, Loader2 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 const MyProfile = () => {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  
+  // Estados do formulário - Dados Pessoais
+  const [nomeCompleto, setNomeCompleto] = useState('');
+  const [telefone, setTelefone] = useState('');
   const [birthdate, setBirthdate] = useState('');
+  const [localizacao, setLocalizacao] = useState('');
+  
+  // Estados - Informações de Saúde
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
   const [gender, setGender] = useState('');
   const [activityFactor, setActivityFactor] = useState('');
+  
+  // Estados calculados
   const [age, setAge] = useState<number | null>(null);
   const [tmb, setTmb] = useState<{ harrisBenedict: number | null; mifflin: number | null }>({
     harrisBenedict: null,
     mifflin: null
   });
   const [get, setGet] = useState<number | null>(null);
+  
+  // Estados de controle
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  // Carrega dados do perfil ao montar o componente
+  useEffect(() => {
+    if (user) {
+      loadProfile();
+    }
+  }, [user]);
+
+  const loadProfile = async () => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('perfis')
+        .select('*')
+        .eq('id', user.id)
+        .maybeSingle();
+      
+      if (error) throw error;
+      
+      if (data) {
+        setNomeCompleto(data.nome_completo || '');
+        setTelefone(data.telefone || '');
+        setBirthdate(data.data_nascimento || '');
+        setLocalizacao(data.localizacao || '');
+        setHeight(data.altura?.toString() || '');
+        setWeight(data.peso_atual?.toString() || '');
+        setGender(data.genero || '');
+      }
+    } catch (error: any) {
+      toast({
+        title: 'Erro ao carregar perfil',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Calcula idade automaticamente
   useEffect(() => {
@@ -81,6 +138,112 @@ const MyProfile = () => {
     }
   }, [tmb.mifflin, activityFactor]);
 
+  // Função para salvar dados pessoais
+  const handleSavePersonalData = async () => {
+    if (!user) return;
+    
+    // Validação
+    if (!nomeCompleto || nomeCompleto.trim().length < 2) {
+      toast({
+        title: 'Nome inválido',
+        description: 'O nome completo deve ter pelo menos 2 caracteres.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    if (birthdate) {
+      const birth = new Date(birthdate);
+      if (birth > new Date()) {
+        toast({
+          title: 'Data inválida',
+          description: 'A data de nascimento não pode ser no futuro.',
+          variant: 'destructive',
+        });
+        return;
+      }
+    }
+    
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from('perfis')
+        .upsert({
+          id: user.id,
+          nome_completo: nomeCompleto.trim(),
+          telefone: telefone.trim(),
+          data_nascimento: birthdate || null,
+          localizacao: localizacao.trim().replace(/\s+/g, ' '),
+          atualizado_em: new Date().toISOString(),
+        }, {
+          onConflict: 'id'
+        });
+      
+      if (error) throw error;
+      
+      toast({
+        title: 'Sucesso!',
+        description: 'Dados pessoais salvos com sucesso.',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Erro ao salvar',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Função para salvar informações de saúde
+  const handleSaveHealthInfo = async () => {
+    if (!user) return;
+    
+    setSaving(true);
+    try {
+      const updateData: any = {
+        id: user.id,
+        atualizado_em: new Date().toISOString(),
+      };
+      
+      if (gender) updateData.genero = gender;
+      if (height) updateData.altura = parseFloat(height);
+      if (weight) updateData.peso_atual = parseFloat(weight);
+      
+      const { error } = await supabase
+        .from('perfis')
+        .upsert(updateData, {
+          onConflict: 'id'
+        });
+      
+      if (error) throw error;
+      
+      toast({
+        title: 'Sucesso!',
+        description: 'Informações de saúde salvas com sucesso.',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Erro ao salvar',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
     <DashboardLayout>
       <div className="max-w-4xl mx-auto space-y-6">
@@ -110,8 +273,8 @@ const MyProfile = () => {
                 </Button>
               </div>
               <div>
-                <CardTitle className="text-xl">João da Silva</CardTitle>
-                <CardDescription>Membro desde Janeiro 2024</CardDescription>
+                <CardTitle className="text-xl">{nomeCompleto || 'Seu Nome'}</CardTitle>
+                <CardDescription>{user?.email}</CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -128,9 +291,14 @@ const MyProfile = () => {
                   <div className="space-y-2">
                     <Label htmlFor="name" className="flex items-center gap-2">
                       <User className="h-4 w-4 text-muted-foreground" />
-                      Nome Completo
+                      Nome Completo *
                     </Label>
-                    <Input id="name" placeholder="Seu nome completo" defaultValue="João da Silva" />
+                    <Input 
+                      id="name" 
+                      placeholder="Seu nome completo" 
+                      value={nomeCompleto}
+                      onChange={(e) => setNomeCompleto(e.target.value)}
+                    />
                   </div>
                   
                   <div className="space-y-2">
@@ -138,7 +306,13 @@ const MyProfile = () => {
                       <Mail className="h-4 w-4 text-muted-foreground" />
                       E-mail
                     </Label>
-                    <Input id="email" type="email" placeholder="seu@email.com" defaultValue="joao@email.com" />
+                    <Input 
+                      id="email" 
+                      type="email" 
+                      value={user?.email || ''} 
+                      disabled 
+                      className="bg-muted/50 cursor-not-allowed"
+                    />
                   </div>
                   
                   <div className="space-y-2">
@@ -146,7 +320,13 @@ const MyProfile = () => {
                       <Phone className="h-4 w-4 text-muted-foreground" />
                       Telefone
                     </Label>
-                    <Input id="phone" type="tel" placeholder="(00) 00000-0000" />
+                    <Input 
+                      id="phone" 
+                      type="tel" 
+                      placeholder="(00) 00000-0000"
+                      value={telefone}
+                      onChange={(e) => setTelefone(e.target.value)}
+                    />
                   </div>
                   
                   <div className="space-y-2">
@@ -159,6 +339,7 @@ const MyProfile = () => {
                       type="date"
                       value={birthdate}
                       onChange={(e) => setBirthdate(e.target.value)}
+                      max={new Date().toISOString().split('T')[0]}
                     />
                   </div>
                   
@@ -167,13 +348,29 @@ const MyProfile = () => {
                       <MapPin className="h-4 w-4 text-muted-foreground" />
                       Localização
                     </Label>
-                    <Input id="location" placeholder="Cidade, Estado" />
+                    <Input 
+                      id="location" 
+                      placeholder="Cidade, Estado"
+                      value={localizacao}
+                      onChange={(e) => setLocalizacao(e.target.value)}
+                    />
                   </div>
                 </div>
                 
                 <div className="flex justify-end">
-                  <Button className="bg-gradient-to-r from-primary to-primary-glow hover:opacity-90">
-                    Salvar Alterações
+                  <Button 
+                    onClick={handleSavePersonalData}
+                    disabled={saving}
+                    className="bg-gradient-to-r from-primary to-primary-glow hover:opacity-90"
+                  >
+                    {saving ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Salvando...
+                      </>
+                    ) : (
+                      'Salvar Alterações'
+                    )}
                   </Button>
                 </div>
               </TabsContent>
@@ -298,8 +495,19 @@ const MyProfile = () => {
                 )}
                 
                 <div className="flex justify-end">
-                  <Button className="bg-gradient-to-r from-primary to-primary-glow hover:opacity-90">
-                    Salvar Informações
+                  <Button 
+                    onClick={handleSaveHealthInfo}
+                    disabled={saving}
+                    className="bg-gradient-to-r from-primary to-primary-glow hover:opacity-90"
+                  >
+                    {saving ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Salvando...
+                      </>
+                    ) : (
+                      'Salvar Informações'
+                    )}
                   </Button>
                 </div>
               </TabsContent>
