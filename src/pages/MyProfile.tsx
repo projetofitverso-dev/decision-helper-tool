@@ -261,7 +261,14 @@ const MyProfile = () => {
                 <Avatar className="h-20 w-20 border-2 border-primary/20">
                   <AvatarImage src="" />
                   <AvatarFallback className="bg-primary/10 text-primary text-xl font-semibold">
-                    JD
+                    {nomeCompleto
+                      ? nomeCompleto
+                          .split(' ')
+                          .filter(n => n.length > 0)
+                          .map(n => n[0].toUpperCase())
+                          .slice(0, 2)
+                          .join('')
+                      : 'JD'}
                   </AvatarFallback>
                 </Avatar>
                 <Button
@@ -280,10 +287,9 @@ const MyProfile = () => {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="personal" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="personal">Dados Pessoais</TabsTrigger>
                 <TabsTrigger value="health">Informações de Saúde</TabsTrigger>
-                <TabsTrigger value="goals">Metas e Objetivos</TabsTrigger>
               </TabsList>
               
               <TabsContent value="personal" className="space-y-4 mt-6">
@@ -512,58 +518,6 @@ const MyProfile = () => {
                 </div>
               </TabsContent>
               
-              <TabsContent value="goals" className="space-y-4 mt-6">
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="main-goal">Objetivo Principal</Label>
-                    <select id="main-goal" className="w-full h-10 px-3 rounded-md border border-input bg-background">
-                      <option value="">Selecione seu objetivo...</option>
-                      <option value="lose-weight">Perder Peso</option>
-                      <option value="gain-muscle">Ganhar Massa Muscular</option>
-                      <option value="maintain">Manter Peso Atual</option>
-                      <option value="health">Melhorar Saúde Geral</option>
-                      <option value="performance">Aumentar Performance</option>
-                    </select>
-                  </div>
-                  
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="target-weight">Peso Desejado (kg)</Label>
-                      <Input id="target-weight" type="number" placeholder="65" />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="target-date">Data Alvo</Label>
-                      <Input id="target-date" type="date" />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="water-goal">Meta de Água Diária (ml)</Label>
-                    <Input id="water-goal" type="number" placeholder="2000" />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="calorie-goal">Meta de Calorias Diárias</Label>
-                    <Input id="calorie-goal" type="number" placeholder="2000" />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="motivation">Motivação</Label>
-                    <Textarea 
-                      id="motivation" 
-                      placeholder="O que te motiva a alcançar seus objetivos?"
-                      className="min-h-[100px]"
-                    />
-                  </div>
-                </div>
-                
-                <div className="flex justify-end">
-                  <Button className="bg-gradient-to-r from-primary to-primary-glow hover:opacity-90">
-                    Salvar Metas
-                  </Button>
-                </div>
-              </TabsContent>
             </Tabs>
           </CardContent>
         </Card>
