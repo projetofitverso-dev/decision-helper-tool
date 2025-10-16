@@ -158,8 +158,11 @@ export type Database = {
           data_nascimento: string | null
           genero: string | null
           id: string
+          localizacao: string | null
           nome_completo: string | null
           peso_alvo: number | null
+          peso_atual: number | null
+          telefone: string | null
         }
         Insert: {
           altura?: number | null
@@ -169,8 +172,11 @@ export type Database = {
           data_nascimento?: string | null
           genero?: string | null
           id: string
+          localizacao?: string | null
           nome_completo?: string | null
           peso_alvo?: number | null
+          peso_atual?: number | null
+          telefone?: string | null
         }
         Update: {
           altura?: number | null
@@ -180,8 +186,11 @@ export type Database = {
           data_nascimento?: string | null
           genero?: string | null
           id?: string
+          localizacao?: string | null
           nome_completo?: string | null
           peso_alvo?: number | null
+          peso_atual?: number | null
+          telefone?: string | null
         }
         Relationships: []
       }
