@@ -8,9 +8,11 @@ import { Progress } from '@/components/ui/progress';
 import { Droplets, Plus, Target, TrendingUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useProfile } from '@/hooks/useProfile';
 
 const WaterIntake = () => {
   const { toast } = useToast();
+  const { profile } = useProfile();
   const [weight, setWeight] = useState(0);
   const [dailyGoal, setDailyGoal] = useState(0);
   const [currentIntake, setCurrentIntake] = useState(0);
@@ -19,7 +21,12 @@ const WaterIntake = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchUserProfile();
+    if (profile.peso && weight === 0) {
+      setWeight(profile.peso);
+    }
+  }, [profile.peso]);
+
+  useEffect(() => {
     fetchTodayIntake();
     fetchWeeklyHistory();
   }, []);
@@ -31,28 +38,6 @@ const WaterIntake = () => {
       setDailyGoal(parseFloat(calculatedGoal));
     }
   }, [weight]);
-
-  const fetchUserProfile = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data: profile, error } = await supabase
-        .from('perfis')
-        .select('peso_atual')
-        .eq('id', user.id)
-        .single();
-
-      if (error) throw error;
-      if (profile?.peso_atual) {
-        setWeight(profile.peso_atual);
-      }
-    } catch (error) {
-      console.error('Erro ao buscar perfil:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const fetchTodayIntake = async () => {
     try {

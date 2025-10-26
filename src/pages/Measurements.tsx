@@ -8,10 +8,12 @@ import { Ruler, Weight, Activity, Target, TrendingUp, AlertCircle } from 'lucide
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
 
 const Measurements = () => {
   const { toast } = useToast();
   const { user } = useAuth();
+  const { profile, loading: profileLoading } = useProfile();
   const [gender, setGender] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [measurements, setMeasurements] = useState({
@@ -26,26 +28,38 @@ const Measurements = () => {
   useEffect(() => {
     if (user) {
       loadMeasurements();
-      loadProfile();
     }
   }, [user]);
 
-  const loadProfile = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('perfis')
-        .select('genero')
-        .eq('id', user?.id)
-        .single();
-
-      if (error) throw error;
-      if (data) {
-        setGender(data.genero || '');
+  useEffect(() => {
+    if (profileLoading) return;
+    
+    setMeasurements(prev => {
+      const newMeasurements = {
+        ...prev,
+        weight: profile.peso || prev.weight,
+        height: profile.altura || prev.height,
+        age: profile.idade || prev.age,
+      };
+      
+      // Só atualiza se os valores mudaram
+      if (newMeasurements.weight === 0 && profile.peso) {
+        newMeasurements.weight = profile.peso;
       }
-    } catch (error) {
-      console.error('Erro ao carregar perfil:', error);
+      if (newMeasurements.height === 0 && profile.altura) {
+        newMeasurements.height = profile.altura;
+      }
+      if (newMeasurements.age === 0 && profile.idade) {
+        newMeasurements.age = profile.idade;
+      }
+      
+      return newMeasurements;
+    });
+    
+    if (profile.genero) {
+      setGender(profile.genero);
     }
-  };
+  }, [profile, profileLoading]);
 
   const loadMeasurements = async () => {
     try {
