@@ -64,6 +64,42 @@ export type Database = {
           },
         ]
       }
+      alimentos_referencia: {
+        Row: {
+          alimento: string
+          calorias: number | null
+          carboidratos: number | null
+          criado_em: string | null
+          id: string
+          lipideos: number | null
+          proteinas: number | null
+          quantidade: number | null
+          tipo_alimento: string
+        }
+        Insert: {
+          alimento: string
+          calorias?: number | null
+          carboidratos?: number | null
+          criado_em?: string | null
+          id?: string
+          lipideos?: number | null
+          proteinas?: number | null
+          quantidade?: number | null
+          tipo_alimento: string
+        }
+        Update: {
+          alimento?: string
+          calorias?: number | null
+          carboidratos?: number | null
+          criado_em?: string | null
+          id?: string
+          lipideos?: number | null
+          proteinas?: number | null
+          quantidade?: number | null
+          tipo_alimento?: string
+        }
+        Relationships: []
+      }
       consumo_agua: {
         Row: {
           criado_em: string | null
@@ -193,47 +229,6 @@ export type Database = {
           telefone?: string | null
         }
         Relationships: []
-      }
-      substituicoes_alimentos: {
-        Row: {
-          alimento_original: string
-          alimento_substituto: string
-          atualizado_em: string | null
-          criado_em: string | null
-          diferenca_calorias: number | null
-          id: string
-          motivo: string | null
-          usuario_id: string
-        }
-        Insert: {
-          alimento_original: string
-          alimento_substituto: string
-          atualizado_em?: string | null
-          criado_em?: string | null
-          diferenca_calorias?: number | null
-          id?: string
-          motivo?: string | null
-          usuario_id: string
-        }
-        Update: {
-          alimento_original?: string
-          alimento_substituto?: string
-          atualizado_em?: string | null
-          criado_em?: string | null
-          diferenca_calorias?: number | null
-          id?: string
-          motivo?: string | null
-          usuario_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "substituicoes_alimentos_usuario_id_fkey"
-            columns: ["usuario_id"]
-            isOneToOne: false
-            referencedRelation: "perfis"
-            referencedColumns: ["id"]
-          },
-        ]
       }
     }
     Views: {
