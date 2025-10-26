@@ -137,6 +137,13 @@ const WaterIntake = () => {
         return;
       }
 
+      // Buscar o nome do usuário do perfil
+      const { data: profile } = await supabase
+        .from('perfis')
+        .select('nome_completo')
+        .eq('id', user.id)
+        .single();
+
       const quantidadeMl = Math.round(amount * 1000); // Converter litros para ml
 
       const { error } = await supabase
@@ -144,6 +151,7 @@ const WaterIntake = () => {
         .insert({
           usuario_id: user.id,
           quantidade_ml: quantidadeMl,
+          nome_usuario: profile?.nome_completo || null,
           registrado_em: new Date().toISOString()
         });
 
