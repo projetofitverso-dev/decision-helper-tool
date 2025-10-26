@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Upload, Save } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const AddFood = () => {
   const { toast } = useToast();
@@ -20,22 +21,59 @@ const AddFood = () => {
     fats: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Alimento adicionado!",
-      description: `${foodData.name} foi salvo com sucesso`,
-    });
-    // Reset form
-    setFoodData({
-      name: '',
-      category: '',
-      portion: '',
-      calories: '',
-      carbs: '',
-      protein: '',
-      fats: ''
-    });
+    
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Erro",
+          description: "Você precisa estar autenticado para adicionar alimentos",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from('alimentos')
+        .insert({
+          nome_do_alimento: foodData.name,
+          categoria: foodData.category,
+          porcao_padrao: foodData.portion,
+          calorias: parseInt(foodData.calories) || null,
+          carboidratos: parseFloat(foodData.carbs) || null,
+          proteina: parseFloat(foodData.protein) || null,
+          gorduras_totais: parseFloat(foodData.fats) || null,
+          usuario_id: user.id
+        } as any);
+
+      if (error) throw error;
+
+      toast({
+        title: "Alimento adicionado!",
+        description: `${foodData.name} foi salvo com sucesso`,
+      });
+      
+      // Reset form
+      setFoodData({
+        name: '',
+        category: '',
+        portion: '',
+        calories: '',
+        carbs: '',
+        protein: '',
+        fats: ''
+      });
+    } catch (error) {
+      console.error('Erro ao salvar alimento:', error);
+      toast({
+        title: "Erro ao salvar",
+        description: "Não foi possível salvar o alimento. Tente novamente.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
