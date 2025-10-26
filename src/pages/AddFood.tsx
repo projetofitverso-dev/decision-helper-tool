@@ -112,12 +112,12 @@ const AddFood = () => {
                   <SelectValue placeholder="Selecione a categoria" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="carbs">Carboidrato</SelectItem>
-                  <SelectItem value="protein">Proteína</SelectItem>
-                  <SelectItem value="fats">Gordura</SelectItem>
-                  <SelectItem value="fruits">Fruta</SelectItem>
-                  <SelectItem value="vegetables">Vegetal</SelectItem>
-                  <SelectItem value="dairy">Laticínio</SelectItem>
+                  <SelectItem value="Carboidrato">Carboidrato</SelectItem>
+                  <SelectItem value="Proteína">Proteína</SelectItem>
+                  <SelectItem value="Gordura">Gordura</SelectItem>
+                  <SelectItem value="Fruta">Fruta</SelectItem>
+                  <SelectItem value="Vegetal">Vegetal</SelectItem>
+                  <SelectItem value="Laticínio">Laticínio</SelectItem>
                 </SelectContent>
               </Select>
             </div>
