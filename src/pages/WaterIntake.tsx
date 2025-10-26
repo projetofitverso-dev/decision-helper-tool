@@ -28,8 +28,37 @@ const WaterIntake = () => {
 
   useEffect(() => {
     fetchTodayIntake();
-    fetchWeeklyHistory();
   }, []);
+
+  useEffect(() => {
+    if (weight > 0) {
+      fetchWeeklyHistory();
+    }
+  }, [weight]);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('water-intake-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'consumo_agua'
+        },
+        () => {
+          fetchTodayIntake();
+          if (weight > 0) {
+            fetchWeeklyHistory();
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [weight]);
 
   useEffect(() => {
     if (weight > 0) {
@@ -156,9 +185,6 @@ const WaterIntake = () => {
           description: `+${amount}L (${quantidadeMl}ml) adicionados`,
         });
       }
-
-      // Atualizar histórico semanal
-      fetchWeeklyHistory();
     } catch (error) {
       console.error('Erro ao registrar consumo:', error);
       toast({
