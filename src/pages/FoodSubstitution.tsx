@@ -20,6 +20,17 @@ interface AlimentoReferencia {
   quantidade: number | null;
 }
 
+interface AlimentoUsuario {
+  id: string;
+  nome_do_alimento: string;
+  categoria: string;
+  proteina: number | null;
+  carboidratos: number | null;
+  gorduras_totais: number | null;
+  calorias: number | null;
+  porcao_padrao: string | null;
+}
+
 const FoodSubstitution = () => {
   const { toast } = useToast();
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -39,29 +50,93 @@ const FoodSubstitution = () => {
     { icon: Milk, label: 'Laticínios', value: 'Laticínios', color: 'bg-cyan-100 text-cyan-700 hover:bg-cyan-200', emoji: '🥛' }
   ];
 
-  // Buscar alimentos do banco de dados
+  // Mapear categorias do usuário para categorias do sistema
+  const mapearCategoria = (categoria: string): string => {
+    const mapa: { [key: string]: string } = {
+      'Carboidrato': 'Carboidratos',
+      'Proteína': 'Proteínas',
+      'Gordura': 'Gorduras',
+      'Fruta': 'Frutas',
+      'Vegetal': 'Leguminosas',
+      'Laticínio': 'Laticínios'
+    };
+    return mapa[categoria] || categoria;
+  };
+
+  // Buscar alimentos do banco de dados (referência + usuário)
   useEffect(() => {
     const fetchAlimentos = async () => {
       setLoading(true);
-      const { data, error } = await supabase
+      
+      // Buscar alimentos de referência
+      const { data: alimentosRef, error: errorRef } = await supabase
         .from('alimentos_referencia')
         .select('*')
         .order('alimento');
 
-      if (error) {
-        console.error('Erro ao buscar alimentos:', error);
+      // Buscar alimentos do usuário
+      const { data: { user } } = await supabase.auth.getUser();
+      let alimentosUser: AlimentoUsuario[] = [];
+      
+      if (user) {
+        const { data, error } = await supabase
+          .from('alimentos')
+          .select('*')
+          .eq('usuario_id', user.id)
+          .order('nome_do_alimento');
+        
+        if (!error && data) {
+          alimentosUser = data as any;
+        }
+      }
+
+      if (errorRef) {
+        console.error('Erro ao buscar alimentos:', errorRef);
         toast({
           title: "Erro ao carregar alimentos",
           description: "Não foi possível carregar a lista de alimentos",
           variant: "destructive"
         });
       } else {
-        setAlimentos(data || []);
+        // Converter alimentos do usuário para o formato padrão
+        const alimentosUsuarioConvertidos: AlimentoReferencia[] = alimentosUser.map(a => ({
+          id: a.id,
+          tipo_alimento: mapearCategoria(a.categoria),
+          alimento: a.nome_do_alimento,
+          proteinas: a.proteina,
+          carboidratos: a.carboidratos,
+          lipideos: a.gorduras_totais,
+          calorias: a.calorias,
+          quantidade: a.porcao_padrao ? parseInt(a.porcao_padrao) : 100
+        }));
+
+        // Combinar os dois arrays
+        setAlimentos([...(alimentosRef || []), ...alimentosUsuarioConvertidos]);
       }
       setLoading(false);
     };
 
     fetchAlimentos();
+
+    // Realtime - atualizar quando novos alimentos são adicionados
+    const channel = supabase
+      .channel('alimentos-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'alimentos'
+        },
+        () => {
+          fetchAlimentos();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [toast]);
 
   // Filtrar alimentos pela categoria selecionada
