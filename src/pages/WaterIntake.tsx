@@ -218,8 +218,8 @@ const WaterIntake = () => {
                 <Input
                   id="weight"
                   type="number"
-                  value={weight}
-                  onChange={(e) => setWeight(parseFloat(e.target.value) || 0)}
+                  value={weight || ''}
+                  onChange={(e) => setWeight(e.target.value === '' ? 0 : parseFloat(e.target.value) || 0)}
                   className="mt-1"
                 />
               </div>
