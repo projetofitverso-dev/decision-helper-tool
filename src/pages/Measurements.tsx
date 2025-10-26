@@ -420,30 +420,77 @@ const Measurements = () => {
           </h2>
           
           {weightHistory.length > 0 ? (
-            <div className="h-48 flex items-end justify-between gap-2">
+            <div className="h-56 flex items-end justify-between gap-3 relative">
               {weightHistory.map((record, index) => {
                 const maxWeight = Math.max(...weightHistory.map(r => r.weight));
-                const heightPercentage = (record.weight / maxWeight) * 100;
+                const minWeight = Math.min(...weightHistory.map(r => r.weight));
+                const range = maxWeight - minWeight || 1;
+                const heightPercentage = ((record.weight - minWeight) / range) * 70 + 30;
+                const prevWeight = index > 0 ? weightHistory[index - 1].weight : record.weight;
+                const weightChange = record.weight - prevWeight;
+                const isGaining = weightChange > 0;
+                const isLosing = weightChange < 0;
                 
                 return (
-                  <div key={index} className="flex-1 flex flex-col items-center">
-                    <div 
-                      className="w-full bg-gradient-primary rounded-t-lg transition-all hover:opacity-80"
-                      style={{ height: `${heightPercentage}%` }}
-                    />
-                    <p className="text-xs mt-2 text-muted-foreground font-semibold">
-                      {record.weight}kg
-                    </p>
-                    <p className="text-[10px] text-muted-foreground">
-                      {record.date}
-                    </p>
+                  <div 
+                    key={index} 
+                    className="flex-1 flex flex-col items-center group relative animate-fade-in"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    {/* Tooltip */}
+                    <div className="absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
+                      <div className="bg-card border-2 border-primary/20 rounded-lg p-3 shadow-lg min-w-[120px]">
+                        <p className="text-sm font-bold text-center text-foreground">{record.weight}kg</p>
+                        <p className="text-xs text-center text-muted-foreground mt-1">{record.date}</p>
+                        {index > 0 && (
+                          <p className={`text-xs text-center mt-1 font-semibold ${
+                            isGaining ? 'text-warning' : isLosing ? 'text-success' : 'text-muted-foreground'
+                          }`}>
+                            {weightChange > 0 ? '+' : ''}{weightChange.toFixed(1)}kg
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* Barra do gráfico */}
+                    <div className="relative w-full h-full flex items-end">
+                      <div 
+                        className="w-full bg-gradient-primary rounded-t-lg transition-all duration-500 hover:shadow-glow cursor-pointer relative overflow-hidden group-hover:scale-105"
+                        style={{ height: `${heightPercentage}%` }}
+                      >
+                        {/* Efeito de brilho no hover */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-white/0 to-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        
+                        {/* Indicador de mudança */}
+                        {index > 0 && weightChange !== 0 && (
+                          <div className={`absolute -top-6 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300`}>
+                            {isGaining ? (
+                              <span className="text-warning text-xl">↑</span>
+                            ) : (
+                              <span className="text-success text-xl">↓</span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* Labels */}
+                    <div className="mt-2 text-center">
+                      <p className="text-xs text-muted-foreground font-semibold group-hover:text-primary transition-colors">
+                        {record.weight}kg
+                      </p>
+                      <p className="text-[10px] text-muted-foreground">
+                        {record.date}
+                      </p>
+                    </div>
                   </div>
                 );
               })}
             </div>
           ) : (
-            <div className="h-48 flex items-center justify-center">
-              <p className="text-muted-foreground">Nenhum registro de peso ainda. Salve suas medidas para ver a evolução!</p>
+            <div className="h-56 flex flex-col items-center justify-center gap-3">
+              <div className="text-4xl opacity-50">📊</div>
+              <p className="text-muted-foreground text-center">Nenhum registro de peso ainda.<br/>Salve suas medidas para ver a evolução!</p>
             </div>
           )}
         </Card>
