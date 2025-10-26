@@ -1,12 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Apple, Beef, Wheat, Fish, Milk, Egg, Calculator, Carrot, Cherry } from 'lucide-react';
+import { Apple, Beef, Wheat, Fish, Milk, Egg, Calculator } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+
+interface AlimentoReferencia {
+  id: string;
+  tipo_alimento: string;
+  alimento: string;
+  proteinas: number | null;
+  carboidratos: number | null;
+  lipideos: number | null;
+  calorias: number | null;
+  quantidade: number | null;
+}
 
 const FoodSubstitution = () => {
   const { toast } = useToast();
@@ -15,24 +27,47 @@ const FoodSubstitution = () => {
   const [quantity, setQuantity] = useState('');
   const [substituteFood, setSubstituteFood] = useState('');
   const [result, setResult] = useState<any>(null);
+  const [alimentos, setAlimentos] = useState<AlimentoReferencia[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const foodCategories = [
-    { icon: Wheat, label: 'Carboidratos', value: 'carbs', color: 'bg-amber-100 text-amber-700 hover:bg-amber-200', emoji: '🌾' },
-    { icon: Beef, label: 'Proteínas', value: 'protein', color: 'bg-red-100 text-red-700 hover:bg-red-200', emoji: '🥩' },
-    { icon: Fish, label: 'Gorduras', value: 'fats', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200', emoji: '🐟' },
-    { icon: Apple, label: 'Frutas', value: 'fruits', color: 'bg-green-100 text-green-700 hover:bg-green-200', emoji: '🍎' },
-    { icon: Egg, label: 'Leguminosas', value: 'legumes', color: 'bg-purple-100 text-purple-700 hover:bg-purple-200', emoji: '🫘' },
-    { icon: Milk, label: 'Laticínios', value: 'dairy', color: 'bg-cyan-100 text-cyan-700 hover:bg-cyan-200', emoji: '🥛' }
+    { icon: Wheat, label: 'Carboidratos', value: 'Carboidratos', color: 'bg-amber-100 text-amber-700 hover:bg-amber-200', emoji: '🌾' },
+    { icon: Beef, label: 'Proteínas', value: 'Proteínas', color: 'bg-red-100 text-red-700 hover:bg-red-200', emoji: '🥩' },
+    { icon: Fish, label: 'Gorduras', value: 'Gorduras', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200', emoji: '🐟' },
+    { icon: Apple, label: 'Frutas', value: 'Frutas', color: 'bg-green-100 text-green-700 hover:bg-green-200', emoji: '🍎' },
+    { icon: Egg, label: 'Leguminosas', value: 'Leguminosas', color: 'bg-purple-100 text-purple-700 hover:bg-purple-200', emoji: '🫘' },
+    { icon: Milk, label: 'Laticínios', value: 'Laticínios', color: 'bg-cyan-100 text-cyan-700 hover:bg-cyan-200', emoji: '🥛' }
   ];
 
-  const foodOptions = {
-    carbs: ['Arroz branco cozido', 'Arroz integral cozido', 'Batata inglesa cozida', 'Batata doce cozida', 'Macarrão cozido', 'Mandioca cozida', 'Mandioquinha', 'Cuscuz de milho cozido', 'Abóbora cabotiã cozida', 'Milho verde enlatado drenado', 'Pão francês', 'Tapioca', 'Quinoa cozida', 'Pão de forma tradicional', 'Aveia', 'Farofa pronta Yoki', 'Farinha tradicional', 'Pão de forma integral'],
-    protein: ['Carne bovina sem gordura', 'Peito de frango', 'Porco lombo assado', 'Frango sobrecoxa sem pele assada', 'Atum em conserva de óleo', 'Filé de merluza assado', 'Sardinha assada', 'Salmão sem pele grelhado', 'Whey concentrado'],
-    fats: ['Abacate cru', 'Amendoim torrado salgado', 'Amêndoa torrada salgada', 'Castanha de caju torrada salgada', 'Castanha do Brasil crua', 'Coco cru', 'Pasta de amendoim'],
-    fruits: ['Abacaxi', 'Acerola', 'Ameixa', 'Banana da terra', 'Banana nanica', 'Banana prata', 'Banana maçã', 'Banana ouro', 'Goiaba vermelha com casca', 'Jabuticaba', 'Kiwi', 'Laranja lima', 'Laranja pera', 'Limão tahiti', 'Maçã argentina com casca', 'Maçã fuji com casca', 'Mamão formosa', 'Mamão papaia', 'Manga palmer', 'Maracujá', 'Melancia', 'Mexerica murcote', 'Morango', 'Pera williams', 'Uva itália', 'Uva rubi'],
-    legumes: ['Feijão', 'Lentilha', 'Grão de bico', 'Ervilha', 'Soja'],
-    dairy: ['Creme de ricota', 'Iogurte integral', 'Iogurte natural desnatado', 'Leite integral', 'Leite desnatado', 'Queijo minas frescal', 'Queijo mussarela', 'Queijo parmesão', 'Queijo prato', 'Queijo ricota', 'Requeijão light', 'Requeijão']
-  };
+  // Buscar alimentos do banco de dados
+  useEffect(() => {
+    const fetchAlimentos = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('alimentos_referencia')
+        .select('*')
+        .order('alimento');
+
+      if (error) {
+        console.error('Erro ao buscar alimentos:', error);
+        toast({
+          title: "Erro ao carregar alimentos",
+          description: "Não foi possível carregar a lista de alimentos",
+          variant: "destructive"
+        });
+      } else {
+        setAlimentos(data || []);
+      }
+      setLoading(false);
+    };
+
+    fetchAlimentos();
+  }, [toast]);
+
+  // Filtrar alimentos pela categoria selecionada
+  const alimentosFiltrados = alimentos.filter(
+    a => a.tipo_alimento === selectedCategory
+  );
 
   const handleCalculate = () => {
     if (!originalFood || !quantity || !substituteFood) {
@@ -44,16 +79,70 @@ const FoodSubstitution = () => {
       return;
     }
 
-    // Simulação de cálculo
-    const equivalentQuantity = (parseFloat(quantity) * 1.2).toFixed(0);
+    // Buscar dados do alimento original
+    const alimentoOriginal = alimentos.find(a => a.alimento === originalFood);
+    const alimentoSubstituto = alimentos.find(a => a.alimento === substituteFood);
+
+    if (!alimentoOriginal || !alimentoSubstituto) {
+      toast({
+        title: "Erro no cálculo",
+        description: "Alimento não encontrado no banco de dados",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validar dados necessários
+    if (!alimentoOriginal.calorias || !alimentoOriginal.quantidade || 
+        !alimentoSubstituto.calorias || !alimentoSubstituto.quantidade) {
+      toast({
+        title: "Dados incompletos",
+        description: "Alguns alimentos não possuem informações nutricionais completas",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const quantidadeDesejada = parseFloat(quantity);
+
+    // Cálculo conforme solicitado:
+    // 1. Calorias por grama do alimento original
+    const caloriasPorGramaOriginal = alimentoOriginal.calorias / alimentoOriginal.quantidade;
+    
+    // 2. Calorias totais da quantidade desejada
+    const caloriasTotais = caloriasPorGramaOriginal * quantidadeDesejada;
+    
+    // 3. Calorias por grama do alimento substituto
+    const caloriasPorGramaSubstituto = alimentoSubstituto.calorias / alimentoSubstituto.quantidade;
+    
+    // 4. Quantidade equivalente do substituto (mesmas calorias)
+    const quantidadeEquivalente = caloriasTotais / caloriasPorGramaSubstituto;
+
+    // Calcular macros proporcionais
+    const proteinasPorGramaOriginal = (alimentoOriginal.proteinas || 0) / alimentoOriginal.quantidade;
+    const carboidratosPorGramaOriginal = (alimentoOriginal.carboidratos || 0) / alimentoOriginal.quantidade;
+    const lipideosPorGramaOriginal = (alimentoOriginal.lipideos || 0) / alimentoOriginal.quantidade;
+
+    const proteinasPorGramaSubstituto = (alimentoSubstituto.proteinas || 0) / alimentoSubstituto.quantidade;
+    const carboidratosPorGramaSubstituto = (alimentoSubstituto.carboidratos || 0) / alimentoSubstituto.quantidade;
+    const lipideosPorGramaSubstituto = (alimentoSubstituto.lipideos || 0) / alimentoSubstituto.quantidade;
+
     setResult({
-      original: `${quantity}g de ${originalFood}`,
-      substitute: `${equivalentQuantity}g de ${substituteFood}`,
-      nutritionalInfo: {
-        calories: 150,
-        protein: 20,
-        carbs: 30,
-        fats: 5
+      original: {
+        nome: alimentoOriginal.alimento,
+        quantidade: quantidadeDesejada,
+        calorias: caloriasTotais.toFixed(1),
+        proteinas: (proteinasPorGramaOriginal * quantidadeDesejada).toFixed(1),
+        carboidratos: (carboidratosPorGramaOriginal * quantidadeDesejada).toFixed(1),
+        lipideos: (lipideosPorGramaOriginal * quantidadeDesejada).toFixed(1)
+      },
+      substituto: {
+        nome: alimentoSubstituto.alimento,
+        quantidade: quantidadeEquivalente.toFixed(1),
+        calorias: caloriasTotais.toFixed(1),
+        proteinas: (proteinasPorGramaSubstituto * quantidadeEquivalente).toFixed(1),
+        carboidratos: (carboidratosPorGramaSubstituto * quantidadeEquivalente).toFixed(1),
+        lipideos: (lipideosPorGramaSubstituto * quantidadeEquivalente).toFixed(1)
       }
     });
 
@@ -104,13 +193,23 @@ const FoodSubstitution = () => {
           <div className="space-y-4">
             <div>
               <Label htmlFor="originalFood">Substituir este alimento:</Label>
-              <Select value={originalFood} onValueChange={setOriginalFood}>
+              <Select 
+                value={originalFood} 
+                onValueChange={setOriginalFood}
+                disabled={!selectedCategory || loading}
+              >
                 <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="Selecione o alimento" />
+                  <SelectValue placeholder={
+                    loading ? "Carregando..." : 
+                    !selectedCategory ? "Selecione uma categoria primeiro" : 
+                    "Selecione o alimento"
+                  } />
                 </SelectTrigger>
                 <SelectContent>
-                  {selectedCategory && foodOptions[selectedCategory as keyof typeof foodOptions]?.map(food => (
-                    <SelectItem key={food} value={food}>{food}</SelectItem>
+                  {alimentosFiltrados.map(food => (
+                    <SelectItem key={food.id} value={food.alimento}>
+                      {food.alimento}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -130,15 +229,25 @@ const FoodSubstitution = () => {
 
             <div>
               <Label htmlFor="substituteFood">Substituir por este alimento:</Label>
-              <Select value={substituteFood} onValueChange={setSubstituteFood}>
+              <Select 
+                value={substituteFood} 
+                onValueChange={setSubstituteFood}
+                disabled={!selectedCategory || loading}
+              >
                 <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="Selecione o substituto" />
+                  <SelectValue placeholder={
+                    loading ? "Carregando..." : 
+                    !selectedCategory ? "Selecione uma categoria primeiro" : 
+                    "Selecione o substituto"
+                  } />
                 </SelectTrigger>
                 <SelectContent>
-                  {selectedCategory && foodOptions[selectedCategory as keyof typeof foodOptions]
-                    ?.filter(food => food !== originalFood)
+                  {alimentosFiltrados
+                    .filter(food => food.alimento !== originalFood)
                     .map(food => (
-                      <SelectItem key={food} value={food}>{food}</SelectItem>
+                      <SelectItem key={food.id} value={food.alimento}>
+                        {food.alimento}
+                      </SelectItem>
                     ))}
                 </SelectContent>
               </Select>
@@ -162,37 +271,54 @@ const FoodSubstitution = () => {
               Resultado da Substituição
             </h2>
             
+            {/* Alimento Original */}
             <div className="bg-card rounded-lg p-4 mb-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Alimento Original</p>
-                  <p className="font-semibold text-lg">{result.original}</p>
+              <p className="text-sm text-muted-foreground mb-2 font-semibold">Alimento Original</p>
+              <p className="text-lg font-bold mb-3">
+                {result.original.quantidade}g de {result.original.nome}
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="text-center p-2 bg-accent/10 rounded">
+                  <p className="text-xl font-bold text-accent">{result.original.calorias}</p>
+                  <p className="text-xs text-muted-foreground">Calorias</p>
                 </div>
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Equivale a</p>
-                  <p className="font-semibold text-lg text-primary">{result.substitute}</p>
+                <div className="text-center p-2 bg-primary/10 rounded">
+                  <p className="text-xl font-bold text-primary">{result.original.proteinas}g</p>
+                  <p className="text-xs text-muted-foreground">Proteínas</p>
+                </div>
+                <div className="text-center p-2 bg-water/10 rounded">
+                  <p className="text-xl font-bold text-water">{result.original.carboidratos}g</p>
+                  <p className="text-xs text-muted-foreground">Carboidratos</p>
+                </div>
+                <div className="text-center p-2 bg-warning/10 rounded">
+                  <p className="text-xl font-bold text-warning">{result.original.lipideos}g</p>
+                  <p className="text-xs text-muted-foreground">Lipídeos</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-card rounded-lg p-4">
-              <p className="text-sm text-muted-foreground mb-3">Informações Nutricionais</p>
+            {/* Alimento Substituto */}
+            <div className="bg-card rounded-lg p-4 border-2 border-primary/20">
+              <p className="text-sm text-muted-foreground mb-2 font-semibold">Equivale a</p>
+              <p className="text-lg font-bold mb-3 text-primary">
+                {result.substituto.quantidade}g de {result.substituto.nome}
+              </p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-accent">{result.nutritionalInfo.calories}</p>
+                <div className="text-center p-2 bg-accent/10 rounded">
+                  <p className="text-xl font-bold text-accent">{result.substituto.calorias}</p>
                   <p className="text-xs text-muted-foreground">Calorias</p>
                 </div>
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-primary">{result.nutritionalInfo.protein}g</p>
+                <div className="text-center p-2 bg-primary/10 rounded">
+                  <p className="text-xl font-bold text-primary">{result.substituto.proteinas}g</p>
                   <p className="text-xs text-muted-foreground">Proteínas</p>
                 </div>
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-water">{result.nutritionalInfo.carbs}g</p>
+                <div className="text-center p-2 bg-water/10 rounded">
+                  <p className="text-xl font-bold text-water">{result.substituto.carboidratos}g</p>
                   <p className="text-xs text-muted-foreground">Carboidratos</p>
                 </div>
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-warning">{result.nutritionalInfo.fats}g</p>
-                  <p className="text-xs text-muted-foreground">Gorduras</p>
+                <div className="text-center p-2 bg-warning/10 rounded">
+                  <p className="text-xl font-bold text-warning">{result.substituto.lipideos}g</p>
+                  <p className="text-xs text-muted-foreground">Lipídeos</p>
                 </div>
               </div>
             </div>
