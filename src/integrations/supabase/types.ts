@@ -140,40 +140,40 @@ export type Database = {
       }
       medidas: {
         Row: {
-          bracos: number | null
+          abdomen: number | null
+          altura: number | null
           cintura: number | null
-          coxas: number | null
           criado_em: string | null
           id: string
+          idade: number | null
           medido_em: string | null
           observacoes: string | null
-          peito: number | null
           peso: number
           quadril: number | null
           usuario_id: string
         }
         Insert: {
-          bracos?: number | null
+          abdomen?: number | null
+          altura?: number | null
           cintura?: number | null
-          coxas?: number | null
           criado_em?: string | null
           id?: string
+          idade?: number | null
           medido_em?: string | null
           observacoes?: string | null
-          peito?: number | null
           peso: number
           quadril?: number | null
           usuario_id: string
         }
         Update: {
-          bracos?: number | null
+          abdomen?: number | null
+          altura?: number | null
           cintura?: number | null
-          coxas?: number | null
           criado_em?: string | null
           id?: string
+          idade?: number | null
           medido_em?: string | null
           observacoes?: string | null
-          peito?: number | null
           peso?: number
           quadril?: number | null
           usuario_id?: string
