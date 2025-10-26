@@ -7,35 +7,171 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { Droplets, Plus, Target, TrendingUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const WaterIntake = () => {
   const { toast } = useToast();
-  const [weight, setWeight] = useState(63);
-  const [dailyGoal, setDailyGoal] = useState(2.21);
-  const [currentIntake, setCurrentIntake] = useState(0.9);
+  const [weight, setWeight] = useState(0);
+  const [dailyGoal, setDailyGoal] = useState(0);
+  const [currentIntake, setCurrentIntake] = useState(0);
   const [customAmount, setCustomAmount] = useState('');
+  const [weeklyHistory, setWeeklyHistory] = useState<Array<{ day: string; percentage: number }>>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Calcula meta baseada no peso (35ml por kg)
-    const calculatedGoal = (weight * 0.035).toFixed(2);
-    setDailyGoal(parseFloat(calculatedGoal));
+    fetchUserProfile();
+    fetchTodayIntake();
+    fetchWeeklyHistory();
+  }, []);
+
+  useEffect(() => {
+    if (weight > 0) {
+      // Calcula meta baseada no peso (35ml por kg) - resultado em litros
+      const calculatedGoal = (weight * 0.035).toFixed(2);
+      setDailyGoal(parseFloat(calculatedGoal));
+    }
   }, [weight]);
+
+  const fetchUserProfile = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile, error } = await supabase
+        .from('perfis')
+        .select('peso_atual')
+        .eq('id', user.id)
+        .single();
+
+      if (error) throw error;
+      if (profile?.peso_atual) {
+        setWeight(profile.peso_atual);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar perfil:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchTodayIntake = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const { data, error } = await supabase
+        .from('consumo_agua')
+        .select('quantidade_ml')
+        .eq('usuario_id', user.id)
+        .gte('registrado_em', today.toISOString());
+
+      if (error) throw error;
+
+      const totalMl = data?.reduce((sum, record) => sum + record.quantidade_ml, 0) || 0;
+      setCurrentIntake(totalMl / 1000); // Converter para litros
+    } catch (error) {
+      console.error('Erro ao buscar consumo de hoje:', error);
+    }
+  };
+
+  const fetchWeeklyHistory = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const today = new Date();
+      const weekAgo = new Date(today);
+      weekAgo.setDate(weekAgo.getDate() - 7);
+
+      const { data, error } = await supabase
+        .from('consumo_agua')
+        .select('quantidade_ml, registrado_em')
+        .eq('usuario_id', user.id)
+        .gte('registrado_em', weekAgo.toISOString());
+
+      if (error) throw error;
+
+      const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+      const history = Array(7).fill(0).map((_, index) => {
+        const date = new Date(today);
+        date.setDate(date.getDate() - (6 - index));
+        return {
+          day: days[date.getDay()],
+          date: date.toISOString().split('T')[0],
+          total: 0
+        };
+      });
+
+      data?.forEach(record => {
+        const recordDate = new Date(record.registrado_em).toISOString().split('T')[0];
+        const dayRecord = history.find(h => h.date === recordDate);
+        if (dayRecord) {
+          dayRecord.total += record.quantidade_ml;
+        }
+      });
+
+      const dailyGoalMl = weight * 35;
+      setWeeklyHistory(history.map(h => ({
+        day: h.day,
+        percentage: dailyGoalMl > 0 ? Math.round((h.total / dailyGoalMl) * 100) : 0
+      })));
+    } catch (error) {
+      console.error('Erro ao buscar histórico semanal:', error);
+    }
+  };
 
   const progress = (currentIntake / dailyGoal) * 100;
 
-  const addWater = (amount: number) => {
-    const newIntake = currentIntake + amount;
-    setCurrentIntake(newIntake);
-    
-    if (newIntake >= dailyGoal && currentIntake < dailyGoal) {
+  const addWater = async (amount: number) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Erro",
+          description: "Você precisa estar logado para registrar consumo de água",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const quantidadeMl = Math.round(amount * 1000); // Converter litros para ml
+
+      const { error } = await supabase
+        .from('consumo_agua')
+        .insert({
+          usuario_id: user.id,
+          quantidade_ml: quantidadeMl,
+          registrado_em: new Date().toISOString()
+        });
+
+      if (error) throw error;
+
+      const newIntake = currentIntake + amount;
+      setCurrentIntake(newIntake);
+      
+      if (newIntake >= dailyGoal && currentIntake < dailyGoal) {
+        toast({
+          title: "🎉 Meta atingida!",
+          description: "Parabéns! Você alcançou sua meta diária de hidratação!",
+        });
+      } else {
+        toast({
+          title: "Água registrada",
+          description: `+${amount}L (${quantidadeMl}ml) adicionados`,
+        });
+      }
+
+      // Atualizar histórico semanal
+      fetchWeeklyHistory();
+    } catch (error) {
+      console.error('Erro ao registrar consumo:', error);
       toast({
-        title: "🎉 Meta atingida!",
-        description: "Parabéns! Você alcançou sua meta diária de hidratação!",
-      });
-    } else {
-      toast({
-        title: "Água registrada",
-        description: `+${amount}L adicionados`,
+        title: "Erro",
+        description: "Não foi possível registrar o consumo de água",
+        variant: "destructive"
       });
     }
   };
@@ -188,14 +324,16 @@ const WaterIntake = () => {
           </h2>
           
           <div className="grid grid-cols-7 gap-2">
-            {['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'].map((day, index) => (
-              <div key={day} className="text-center">
-                <p className="text-xs text-muted-foreground mb-2">{day}</p>
+            {weeklyHistory.map((item, index) => (
+              <div key={index} className="text-center">
+                <p className="text-xs text-muted-foreground mb-2">{item.day}</p>
                 <div className={`h-24 rounded-lg flex items-end justify-center p-2 ${
-                  index === 3 ? 'bg-water' : 'bg-muted'
+                  item.percentage >= 100 ? 'bg-water' : 'bg-muted'
                 }`}>
-                  <span className="text-xs text-white font-medium">
-                    {index === 3 ? '90%' : `${60 + Math.random() * 40}%`.slice(0, 3)}
+                  <span className={`text-xs font-medium ${
+                    item.percentage >= 100 ? 'text-white' : 'text-muted-foreground'
+                  }`}>
+                    {item.percentage}%
                   </span>
                 </div>
               </div>
