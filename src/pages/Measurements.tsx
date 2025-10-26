@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,17 +6,81 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Ruler, Weight, Activity, Target, TrendingUp, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 const Measurements = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
+  const [gender, setGender] = useState<string>('');
+  const [loading, setLoading] = useState(true);
   const [measurements, setMeasurements] = useState({
-    weight: 70,
-    height: 170,
-    age: 25,
-    waist: 80,
-    abdomen: 85,
-    hip: 95
+    weight: 0,
+    height: 0,
+    age: 0,
+    waist: 0,
+    abdomen: 0,
+    hip: 0
   });
+
+  useEffect(() => {
+    if (user) {
+      loadMeasurements();
+      loadProfile();
+    }
+  }, [user]);
+
+  const loadProfile = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('perfis')
+        .select('genero')
+        .eq('id', user?.id)
+        .single();
+
+      if (error) throw error;
+      if (data) {
+        setGender(data.genero || '');
+      }
+    } catch (error) {
+      console.error('Erro ao carregar perfil:', error);
+    }
+  };
+
+  const loadMeasurements = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('medidas')
+        .select('*')
+        .eq('usuario_id', user?.id)
+        .order('medido_em', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) throw error;
+      
+      if (data) {
+        setMeasurements({
+          weight: data.peso || 0,
+          height: data.altura || 0,
+          age: data.idade || 0,
+          waist: data.cintura || 0,
+          abdomen: data.abdomen || 0,
+          hip: data.quadril || 0
+        });
+      }
+    } catch (error) {
+      console.error('Erro ao carregar medidas:', error);
+      toast({
+        title: "Erro ao carregar medidas",
+        description: "Não foi possível carregar suas medidas anteriores",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const calculateBMI = () => {
     const heightInMeters = measurements.height / 100;
@@ -31,10 +95,26 @@ const Measurements = () => {
   };
 
   const getBMICategory = (bmi: number) => {
-    if (bmi < 18.5) return { category: 'Abaixo do peso', color: 'text-water', recommendation: 'Você precisa ganhar peso' };
-    if (bmi < 25) return { category: 'Peso normal', color: 'text-success', recommendation: 'Você está no peso ideal!' };
-    if (bmi < 30) return { category: 'Sobrepeso', color: 'text-warning', recommendation: 'Você precisa perder alguns quilos' };
-    return { category: 'Obesidade', color: 'text-destructive', recommendation: 'É importante buscar orientação médica' };
+    if (bmi < 18.5) return { category: 'Baixo peso', color: 'text-blue-500', recommendation: 'Procure orientação nutricional para ganho de peso saudável' };
+    if (bmi < 25) return { category: 'Peso normal', color: 'text-green-500', recommendation: 'Mantenha seus hábitos saudáveis!' };
+    if (bmi < 30) return { category: 'Sobrepeso', color: 'text-yellow-500', recommendation: 'Considere ajustes na dieta e atividade física' };
+    if (bmi < 35) return { category: 'Obesidade grau I', color: 'text-orange-500', recommendation: 'Busque orientação profissional para perda de peso' };
+    if (bmi < 40) return { category: 'Obesidade grau II', color: 'text-red-500', recommendation: 'É importante buscar acompanhamento médico' };
+    return { category: 'Obesidade grau III (grave)', color: 'text-red-700', recommendation: 'Busque acompanhamento médico urgente' };
+  };
+
+  const getWaistHipRatioCategory = (ratio: number) => {
+    if (!gender) return { risk: 'Indefinido', color: 'text-muted-foreground' };
+    
+    if (gender.toLowerCase() === 'feminino' || gender.toLowerCase() === 'f') {
+      if (ratio <= 0.80) return { risk: 'Baixo', color: 'text-green-500' };
+      if (ratio <= 0.85) return { risk: 'Moderado', color: 'text-yellow-500' };
+      return { risk: 'Alto', color: 'text-red-500' };
+    } else {
+      if (ratio <= 0.95) return { risk: 'Baixo', color: 'text-green-500' };
+      if (ratio <= 1.00) return { risk: 'Moderado', color: 'text-yellow-500' };
+      return { risk: 'Alto', color: 'text-red-500' };
+    }
   };
 
   const getIdealWeight = () => {
@@ -46,14 +126,60 @@ const Measurements = () => {
 
   const bmi = parseFloat(calculateBMI());
   const bmiInfo = getBMICategory(bmi);
+  const waistHipRatio = parseFloat(calculateWaistHipRatio());
+  const waistHipInfo = getWaistHipRatioCategory(waistHipRatio);
   const idealWeight = getIdealWeight();
   const weightDifference = measurements.weight - parseFloat(idealWeight.max);
 
-  const handleSave = () => {
-    toast({
-      title: "Medidas salvas!",
-      description: "Suas medidas foram registradas com sucesso",
-    });
+  const handleSave = async () => {
+    if (!user) {
+      toast({
+        title: "Erro",
+        description: "Você precisa estar logado para salvar medidas",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!measurements.weight || !measurements.height) {
+      toast({
+        title: "Campos obrigatórios",
+        description: "Peso e altura são obrigatórios",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('medidas')
+        .insert({
+          usuario_id: user.id,
+          peso: measurements.weight,
+          altura: measurements.height,
+          idade: measurements.age || null,
+          cintura: measurements.waist || null,
+          abdomen: measurements.abdomen || null,
+          quadril: measurements.hip || null,
+          medido_em: new Date().toISOString()
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Medidas salvas!",
+        description: `IMC: ${bmi} (${bmiInfo.category}) | RCQ: ${waistHipRatio} (Risco ${waistHipInfo.risk})`,
+      });
+
+      loadMeasurements();
+    } catch (error) {
+      console.error('Erro ao salvar medidas:', error);
+      toast({
+        title: "Erro ao salvar",
+        description: "Não foi possível salvar suas medidas",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleChange = (field: string, value: string) => {
@@ -62,6 +188,16 @@ const Measurements = () => {
       [field]: parseFloat(value) || 0
     }));
   };
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="max-w-4xl mx-auto flex items-center justify-center h-64">
+          <p className="text-muted-foreground">Carregando medidas...</p>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -204,11 +340,22 @@ const Measurements = () => {
             <div className="md:col-span-3">
               <div className="bg-gradient-health p-4 rounded-lg mt-2">
                 <Label className="text-primary font-semibold">Relação Cintura/Quadril (RCQ)</Label>
-                <div className="mt-2 flex items-center gap-4">
-                  <p className="text-2xl font-bold text-primary">{calculateWaistHipRatio()}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {parseFloat(calculateWaistHipRatio()) <= 0.85 ? '✅ Ideal' : 
-                     parseFloat(calculateWaistHipRatio()) <= 0.90 ? '⚠️ Atenção' : '⚠️ Risco aumentado'}
+                <div className="mt-2 space-y-2">
+                  <div className="flex items-center gap-4">
+                    <p className="text-2xl font-bold text-primary">{calculateWaistHipRatio()}</p>
+                    <p className={`text-sm font-semibold ${waistHipInfo.color}`}>
+                      Risco {waistHipInfo.risk}
+                    </p>
+                  </div>
+                  {!gender && (
+                    <p className="text-xs text-muted-foreground">
+                      * Configure seu gênero no perfil para classificação precisa
+                    </p>
+                  )}
+                  <p className="text-xs text-muted-foreground">
+                    {gender.toLowerCase() === 'feminino' || gender.toLowerCase() === 'f' 
+                      ? 'Mulheres: ≤0.80 (baixo) | 0.81-0.85 (moderado) | >0.85 (alto)'
+                      : 'Homens: ≤0.95 (baixo) | 0.96-1.00 (moderado) | >1.00 (alto)'}
                   </p>
                 </div>
               </div>
