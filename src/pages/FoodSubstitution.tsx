@@ -353,8 +353,8 @@ const FoodSubstitution = () => {
                 {result.original.quantidade}g de {result.original.nome}
               </p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div className="text-center p-2 bg-accent/10 rounded">
-                  <p className="text-xl font-bold text-accent">{result.original.calorias}</p>
+                <div className="text-center p-2 bg-secondary/10 rounded">
+                  <p className="text-xl font-bold text-secondary">{result.original.calorias}</p>
                   <p className="text-xs text-muted-foreground">Calorias</p>
                 </div>
                 <div className="text-center p-2 bg-primary/10 rounded">
@@ -379,8 +379,8 @@ const FoodSubstitution = () => {
                 {result.substituto.quantidade}g de {result.substituto.nome}
               </p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div className="text-center p-2 bg-accent/10 rounded">
-                  <p className="text-xl font-bold text-accent">{result.substituto.calorias}</p>
+                <div className="text-center p-2 bg-secondary/10 rounded">
+                  <p className="text-xl font-bold text-secondary">{result.substituto.calorias}</p>
                   <p className="text-xs text-muted-foreground">Calorias</p>
                 </div>
                 <div className="text-center p-2 bg-primary/10 rounded">
