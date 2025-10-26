@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { Droplets, Plus, Target, TrendingUp } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Droplets, Plus, Target, TrendingUp, Calendar } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useProfile } from '@/hooks/useProfile';
@@ -17,8 +18,9 @@ const WaterIntake = () => {
   const [dailyGoal, setDailyGoal] = useState(0);
   const [currentIntake, setCurrentIntake] = useState(0);
   const [customAmount, setCustomAmount] = useState('');
-  const [weeklyHistory, setWeeklyHistory] = useState<Array<{ day: string; percentage: number }>>([]);
+  const [history, setHistory] = useState<Array<{ label: string; percentage: number }>>([]);
   const [loading, setLoading] = useState(true);
+  const [period, setPeriod] = useState('7');
 
   useEffect(() => {
     if (profile.peso && weight === 0) {
@@ -32,9 +34,9 @@ const WaterIntake = () => {
 
   useEffect(() => {
     if (weight > 0) {
-      fetchWeeklyHistory();
+      fetchHistory(parseInt(period));
     }
-  }, [weight]);
+  }, [weight, period]);
 
   useEffect(() => {
     const channel = supabase
@@ -49,7 +51,7 @@ const WaterIntake = () => {
         () => {
           fetchTodayIntake();
           if (weight > 0) {
-            fetchWeeklyHistory();
+            fetchHistory(parseInt(period));
           }
         }
       )
@@ -58,7 +60,7 @@ const WaterIntake = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [weight]);
+  }, [weight, period]);
 
   useEffect(() => {
     if (weight > 0) {
@@ -91,49 +93,145 @@ const WaterIntake = () => {
     }
   };
 
-  const fetchWeeklyHistory = async () => {
+  const fetchHistory = async (days: number) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
       const today = new Date();
-      const weekAgo = new Date(today);
-      weekAgo.setDate(weekAgo.getDate() - 7);
+      const startDate = new Date(today);
+      startDate.setDate(startDate.getDate() - days);
 
       const { data, error } = await supabase
         .from('consumo_agua')
         .select('quantidade_ml, registrado_em')
         .eq('usuario_id', user.id)
-        .gte('registrado_em', weekAgo.toISOString());
+        .gte('registrado_em', startDate.toISOString());
 
       if (error) throw error;
 
-      const days = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-      const history = Array(7).fill(0).map((_, index) => {
-        const date = new Date(today);
-        date.setDate(date.getDate() - (6 - index));
-        return {
-          day: days[date.getDay()],
-          date: date.toISOString().split('T')[0],
-          total: 0
-        };
-      });
-
-      data?.forEach(record => {
-        const recordDate = new Date(record.registrado_em).toISOString().split('T')[0];
-        const dayRecord = history.find(h => h.date === recordDate);
-        if (dayRecord) {
-          dayRecord.total += record.quantidade_ml;
-        }
-      });
-
       const dailyGoalMl = weight * 35;
-      setWeeklyHistory(history.map(h => ({
-        day: h.day,
-        percentage: dailyGoalMl > 0 ? Math.round((h.total / dailyGoalMl) * 100) : 0
-      })));
+      
+      // Para períodos de 7 dias, mostrar dias da semana
+      if (days === 7) {
+        const dayNames = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+        const historyData = Array(7).fill(0).map((_, index) => {
+          const date = new Date(today);
+          date.setDate(date.getDate() - (6 - index));
+          return {
+            label: dayNames[date.getDay()],
+            date: date.toISOString().split('T')[0],
+            total: 0
+          };
+        });
+
+        data?.forEach(record => {
+          const recordDate = new Date(record.registrado_em).toISOString().split('T')[0];
+          const dayRecord = historyData.find(h => h.date === recordDate);
+          if (dayRecord) {
+            dayRecord.total += record.quantidade_ml;
+          }
+        });
+
+        setHistory(historyData.map(h => ({
+          label: h.label,
+          percentage: dailyGoalMl > 0 ? Math.round((h.total / dailyGoalMl) * 100) : 0
+        })));
+      } 
+      // Para períodos de 30 dias, agrupar em semanas
+      else if (days === 30) {
+        const weeks = 4;
+        const historyData = Array(weeks).fill(0).map((_, index) => {
+          const weekStart = new Date(today);
+          weekStart.setDate(weekStart.getDate() - (weeks - index) * 7);
+          const weekEnd = new Date(weekStart);
+          weekEnd.setDate(weekEnd.getDate() + 6);
+          return {
+            label: `Sem ${index + 1}`,
+            startDate: weekStart.toISOString().split('T')[0],
+            endDate: weekEnd.toISOString().split('T')[0],
+            total: 0,
+            days: 7
+          };
+        });
+
+        data?.forEach(record => {
+          const recordDate = new Date(record.registrado_em).toISOString().split('T')[0];
+          const weekRecord = historyData.find(h => recordDate >= h.startDate && recordDate <= h.endDate);
+          if (weekRecord) {
+            weekRecord.total += record.quantidade_ml;
+          }
+        });
+
+        setHistory(historyData.map(h => ({
+          label: h.label,
+          percentage: dailyGoalMl > 0 ? Math.round((h.total / (dailyGoalMl * h.days)) * 100) : 0
+        })));
+      }
+      // Para 90 dias (3 meses), agrupar por mês
+      else if (days === 90) {
+        const months = 3;
+        const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+        const historyData = Array(months).fill(0).map((_, index) => {
+          const date = new Date(today);
+          date.setMonth(date.getMonth() - (months - index - 1));
+          const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+          const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+          return {
+            label: monthNames[date.getMonth()],
+            startDate: firstDay.toISOString().split('T')[0],
+            endDate: lastDay.toISOString().split('T')[0],
+            total: 0,
+            days: lastDay.getDate()
+          };
+        });
+
+        data?.forEach(record => {
+          const recordDate = new Date(record.registrado_em).toISOString().split('T')[0];
+          const monthRecord = historyData.find(h => recordDate >= h.startDate && recordDate <= h.endDate);
+          if (monthRecord) {
+            monthRecord.total += record.quantidade_ml;
+          }
+        });
+
+        setHistory(historyData.map(h => ({
+          label: h.label,
+          percentage: dailyGoalMl > 0 ? Math.round((h.total / (dailyGoalMl * h.days)) * 100) : 0
+        })));
+      }
+      // Para 180 dias (6 meses) e 365 dias (1 ano), agrupar por mês
+      else {
+        const months = days === 180 ? 6 : 12;
+        const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+        const historyData = Array(months).fill(0).map((_, index) => {
+          const date = new Date(today);
+          date.setMonth(date.getMonth() - (months - index - 1));
+          const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+          const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+          return {
+            label: monthNames[date.getMonth()],
+            startDate: firstDay.toISOString().split('T')[0],
+            endDate: lastDay.toISOString().split('T')[0],
+            total: 0,
+            days: lastDay.getDate()
+          };
+        });
+
+        data?.forEach(record => {
+          const recordDate = new Date(record.registrado_em).toISOString().split('T')[0];
+          const monthRecord = historyData.find(h => recordDate >= h.startDate && recordDate <= h.endDate);
+          if (monthRecord) {
+            monthRecord.total += record.quantidade_ml;
+          }
+        });
+
+        setHistory(historyData.map(h => ({
+          label: h.label,
+          percentage: dailyGoalMl > 0 ? Math.round((h.total / (dailyGoalMl * h.days)) * 100) : 0
+        })));
+      }
     } catch (error) {
-      console.error('Erro ao buscar histórico semanal:', error);
+      console.error('Erro ao buscar histórico:', error);
     }
   };
 
@@ -337,15 +435,39 @@ const WaterIntake = () => {
 
         {/* Histórico */}
         <Card className="mt-6 p-6">
-          <h2 className="text-xl font-semibold mb-4 flex items-center">
-            <TrendingUp className="mr-2 text-primary" size={24} />
-            Histórico Semanal
-          </h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold flex items-center">
+              <TrendingUp className="mr-2 text-primary" size={24} />
+              Histórico
+            </h2>
+            
+            <div className="flex items-center gap-2">
+              <Calendar className="text-muted-foreground" size={18} />
+              <Select value={period} onValueChange={setPeriod}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="7">Última Semana</SelectItem>
+                  <SelectItem value="30">Último Mês</SelectItem>
+                  <SelectItem value="90">Últimos 3 Meses</SelectItem>
+                  <SelectItem value="180">Últimos 6 Meses</SelectItem>
+                  <SelectItem value="365">Último Ano</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
           
-          <div className="grid grid-cols-7 gap-2">
-            {weeklyHistory.map((item, index) => (
+          <div className={`grid gap-2 ${
+            period === '7' ? 'grid-cols-7' : 
+            period === '30' ? 'grid-cols-4' : 
+            period === '90' ? 'grid-cols-3' : 
+            period === '180' ? 'grid-cols-6' : 
+            'grid-cols-12'
+          }`}>
+            {history.map((item, index) => (
               <div key={index} className="text-center">
-                <p className="text-xs text-muted-foreground mb-2">{item.day}</p>
+                <p className="text-xs text-muted-foreground mb-2">{item.label}</p>
                 <div className={`h-24 rounded-lg flex items-end justify-center p-2 ${
                   item.percentage >= 100 ? 'bg-water' : 'bg-muted'
                 }`}>
