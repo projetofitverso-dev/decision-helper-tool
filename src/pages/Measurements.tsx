@@ -185,7 +185,7 @@ const Measurements = () => {
   const handleChange = (field: string, value: string) => {
     setMeasurements(prev => ({
       ...prev,
-      [field]: parseFloat(value) || 0
+      [field]: value === '' ? 0 : parseFloat(value) || 0
     }));
   };
 
@@ -225,7 +225,7 @@ const Measurements = () => {
                 <Input
                   id="weight"
                   type="number"
-                  value={measurements.weight}
+                  value={measurements.weight || ''}
                   onChange={(e) => handleChange('weight', e.target.value)}
                   className="mt-1"
                 />
@@ -236,7 +236,7 @@ const Measurements = () => {
                 <Input
                   id="height"
                   type="number"
-                  value={measurements.height}
+                  value={measurements.height || ''}
                   onChange={(e) => handleChange('height', e.target.value)}
                   className="mt-1"
                 />
@@ -247,7 +247,7 @@ const Measurements = () => {
                 <Input
                   id="age"
                   type="number"
-                  value={measurements.age}
+                  value={measurements.age || ''}
                   onChange={(e) => handleChange('age', e.target.value)}
                   className="mt-1"
                 />
@@ -309,7 +309,7 @@ const Measurements = () => {
               <Input
                 id="waist"
                 type="number"
-                value={measurements.waist}
+                value={measurements.waist || ''}
                 onChange={(e) => handleChange('waist', e.target.value)}
                 className="mt-1"
               />
@@ -320,7 +320,7 @@ const Measurements = () => {
               <Input
                 id="abdomen"
                 type="number"
-                value={measurements.abdomen}
+                value={measurements.abdomen || ''}
                 onChange={(e) => handleChange('abdomen', e.target.value)}
                 className="mt-1"
               />
@@ -331,7 +331,7 @@ const Measurements = () => {
               <Input
                 id="hip"
                 type="number"
-                value={measurements.hip}
+                value={measurements.hip || ''}
                 onChange={(e) => handleChange('hip', e.target.value)}
                 className="mt-1"
               />
