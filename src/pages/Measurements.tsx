@@ -16,6 +16,7 @@ const Measurements = () => {
   const { profile, loading: profileLoading } = useProfile();
   const [gender, setGender] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const [weightHistory, setWeightHistory] = useState<Array<{ weight: number; date: string }>>([]);
   const [measurements, setMeasurements] = useState({
     weight: 0,
     height: 0,
@@ -28,6 +29,7 @@ const Measurements = () => {
   useEffect(() => {
     if (user) {
       loadMeasurements();
+      loadWeightHistory();
     }
   }, [user]);
 
@@ -93,6 +95,30 @@ const Measurements = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadWeightHistory = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('medidas')
+        .select('peso, medido_em')
+        .eq('usuario_id', user?.id)
+        .order('medido_em', { ascending: false })
+        .limit(7);
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        // Inverter para mostrar do mais antigo para o mais recente
+        const history = data.reverse().map(record => ({
+          weight: record.peso || 0,
+          date: new Date(record.medido_em).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
+        }));
+        setWeightHistory(history);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar histórico de peso:', error);
     }
   };
 
@@ -186,6 +212,7 @@ const Measurements = () => {
       });
 
       loadMeasurements();
+      loadWeightHistory();
     } catch (error) {
       console.error('Erro ao salvar medidas:', error);
       toast({
@@ -389,22 +416,36 @@ const Measurements = () => {
         <Card className="mt-6 p-6">
           <h2 className="text-xl font-semibold mb-4 flex items-center">
             <TrendingUp className="mr-2 text-primary" size={24} />
-            Evolução do Peso (últimos 7 dias)
+            Evolução do Peso (últimos registros)
           </h2>
           
-          <div className="h-48 flex items-end justify-between gap-2">
-            {[68, 69, 69.5, 70, 69.8, 70.2, 70].map((weight, index) => (
-              <div key={index} className="flex-1 flex flex-col items-center">
-                <div 
-                  className="w-full bg-gradient-primary rounded-t-lg transition-all hover:opacity-80"
-                  style={{ height: `${(weight / 75) * 100}%` }}
-                />
-                <p className="text-xs mt-2 text-muted-foreground">
-                  {weight}kg
-                </p>
-              </div>
-            ))}
-          </div>
+          {weightHistory.length > 0 ? (
+            <div className="h-48 flex items-end justify-between gap-2">
+              {weightHistory.map((record, index) => {
+                const maxWeight = Math.max(...weightHistory.map(r => r.weight));
+                const heightPercentage = (record.weight / maxWeight) * 100;
+                
+                return (
+                  <div key={index} className="flex-1 flex flex-col items-center">
+                    <div 
+                      className="w-full bg-gradient-primary rounded-t-lg transition-all hover:opacity-80"
+                      style={{ height: `${heightPercentage}%` }}
+                    />
+                    <p className="text-xs mt-2 text-muted-foreground font-semibold">
+                      {record.weight}kg
+                    </p>
+                    <p className="text-[10px] text-muted-foreground">
+                      {record.date}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="h-48 flex items-center justify-center">
+              <p className="text-muted-foreground">Nenhum registro de peso ainda. Salve suas medidas para ver a evolução!</p>
+            </div>
+          )}
         </Card>
       </div>
     </DashboardLayout>
