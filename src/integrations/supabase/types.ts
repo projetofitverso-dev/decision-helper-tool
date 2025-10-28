@@ -18,40 +18,40 @@ export type Database = {
         Row: {
           calorias: number | null
           carboidratos: number | null
-          consumido_em: string | null
+          categoria: string | null
           criado_em: string | null
-          gorduras: number | null
+          gorduras_totais: number | null
           id: string
-          nome: string
+          nome_do_alimento: string
           observacoes: string | null
+          porcao_padrao: string | null
           proteina: number | null
-          tipo_refeicao: string | null
           usuario_id: string
         }
         Insert: {
           calorias?: number | null
           carboidratos?: number | null
-          consumido_em?: string | null
+          categoria?: string | null
           criado_em?: string | null
-          gorduras?: number | null
+          gorduras_totais?: number | null
           id?: string
-          nome: string
+          nome_do_alimento: string
           observacoes?: string | null
+          porcao_padrao?: string | null
           proteina?: number | null
-          tipo_refeicao?: string | null
           usuario_id: string
         }
         Update: {
           calorias?: number | null
           carboidratos?: number | null
-          consumido_em?: string | null
+          categoria?: string | null
           criado_em?: string | null
-          gorduras?: number | null
+          gorduras_totais?: number | null
           id?: string
-          nome?: string
+          nome_do_alimento?: string
           observacoes?: string | null
+          porcao_padrao?: string | null
           proteina?: number | null
-          tipo_refeicao?: string | null
           usuario_id?: string
         }
         Relationships: [
@@ -97,6 +97,48 @@ export type Database = {
           proteinas?: number | null
           quantidade?: number | null
           tipo_alimento?: string
+        }
+        Relationships: []
+      }
+      configuracoes: {
+        Row: {
+          animacoes: boolean
+          atualizacoes_progresso: boolean
+          atualizado_em: string
+          criado_em: string
+          id: string
+          idioma: string
+          lembrete_agua: boolean
+          som_notificacoes: string
+          tamanho_fonte: string
+          tema: string
+          usuario_id: string
+        }
+        Insert: {
+          animacoes?: boolean
+          atualizacoes_progresso?: boolean
+          atualizado_em?: string
+          criado_em?: string
+          id?: string
+          idioma?: string
+          lembrete_agua?: boolean
+          som_notificacoes?: string
+          tamanho_fonte?: string
+          tema?: string
+          usuario_id: string
+        }
+        Update: {
+          animacoes?: boolean
+          atualizacoes_progresso?: boolean
+          atualizado_em?: string
+          criado_em?: string
+          id?: string
+          idioma?: string
+          lembrete_agua?: boolean
+          som_notificacoes?: string
+          tamanho_fonte?: string
+          tema?: string
+          usuario_id?: string
         }
         Relationships: []
       }
