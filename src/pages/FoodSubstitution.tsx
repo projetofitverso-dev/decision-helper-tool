@@ -42,12 +42,7 @@ const FoodSubstitution = () => {
   const [loading, setLoading] = useState(false);
 
   const foodCategories = [
-    { icon: Wheat, label: 'Carboidratos', value: 'Carboidratos', color: 'bg-amber-100 text-amber-700 hover:bg-amber-200', emoji: '🌾' },
-    { icon: Beef, label: 'Proteínas', value: 'Proteínas', color: 'bg-red-100 text-red-700 hover:bg-red-200', emoji: '🥩' },
-    { icon: Fish, label: 'Gorduras', value: 'Gorduras', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200', emoji: '🐟' },
-    { icon: Apple, label: 'Frutas', value: 'Frutas', color: 'bg-green-100 text-green-700 hover:bg-green-200', emoji: '🍎' },
-    { icon: Egg, label: 'Leguminosas', value: 'Leguminosas', color: 'bg-purple-100 text-purple-700 hover:bg-purple-200', emoji: '🫘' },
-    { icon: Milk, label: 'Laticínios', value: 'Laticínios', color: 'bg-cyan-100 text-cyan-700 hover:bg-cyan-200', emoji: '🥛' }
+    { icon: Beef, label: 'Carne Bovina', value: 'Proteínas', color: 'bg-red-100 text-red-700 hover:bg-red-200', emoji: '🥩' }
   ];
 
   // Mapear categorias do usuário para categorias do sistema
@@ -139,9 +134,17 @@ const FoodSubstitution = () => {
     };
   }, [toast]);
 
-  // Filtrar alimentos pela categoria selecionada
+  // Filtrar alimentos pela categoria selecionada (apenas carne bovina)
   const alimentosFiltrados = alimentos.filter(
-    a => a.tipo_alimento === selectedCategory
+    a => a.tipo_alimento === selectedCategory && 
+    (a.alimento.toLowerCase().includes('carne') || 
+     a.alimento.toLowerCase().includes('bovina') ||
+     a.alimento.toLowerCase().includes('boi') ||
+     a.alimento.toLowerCase().includes('picanha') ||
+     a.alimento.toLowerCase().includes('alcatra') ||
+     a.alimento.toLowerCase().includes('filé') ||
+     a.alimento.toLowerCase().includes('patinho') ||
+     a.alimento.toLowerCase().includes('contrafilé'))
   );
 
   const handleCalculate = () => {
@@ -242,22 +245,22 @@ const FoodSubstitution = () => {
         {/* Seleção de Categoria */}
         <Card className="p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4">
-            Selecione a categoria do alimento
+            Carne Bovina
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div className="flex justify-center">
             {foodCategories.map(({ icon: Icon, label, value, color, emoji }) => (
               <button
                 key={value}
                 onClick={() => setSelectedCategory(value)}
-                className={`p-4 rounded-lg border-2 transition-all hover:shadow-lg transform hover:scale-105 ${
+                className={`p-6 rounded-lg border-2 transition-all hover:shadow-lg transform hover:scale-105 ${
                   selectedCategory === value 
                     ? `${color} ring-2 ring-primary shadow-md` 
                     : `${color}`
                 }`}
               >
-                <div className="text-3xl mb-1">{emoji}</div>
-                <Icon className="mx-auto mb-2" size={20} />
-                <p className="text-xs font-semibold">{label}</p>
+                <div className="text-4xl mb-2">{emoji}</div>
+                <Icon className="mx-auto mb-2" size={24} />
+                <p className="text-sm font-semibold">{label}</p>
               </button>
             ))}
           </div>
