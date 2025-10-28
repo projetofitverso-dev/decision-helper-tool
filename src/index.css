@@ -138,4 +138,35 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Tamanhos de fonte */
+  .font-small {
+    font-size: 14px;
+  }
+
+  .font-small * {
+    font-size: 0.875em;
+  }
+
+  .font-medium {
+    font-size: 16px;
+  }
+
+  .font-large {
+    font-size: 18px;
+  }
+
+  .font-large * {
+    font-size: 1.125em;
+  }
+
+  /* Desabilitar animações */
+  .no-animations *,
+  .no-animations *::before,
+  .no-animations *::after {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+  }
 }

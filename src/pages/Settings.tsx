@@ -41,6 +41,39 @@ const Settings = () => {
     loadSettings();
   }, [user]);
 
+  // Aplicar configurações de aparência quando carregadas ou alteradas
+  useEffect(() => {
+    applyAppearanceSettings();
+  }, [settings]);
+
+  const applyAppearanceSettings = () => {
+    // Aplicar tema
+    const root = document.documentElement;
+    if (settings.tema === 'dark') {
+      root.classList.add('dark');
+    } else if (settings.tema === 'light') {
+      root.classList.remove('dark');
+    } else {
+      // Sistema: detectar preferência do sistema
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        root.classList.add('dark');
+      } else {
+        root.classList.remove('dark');
+      }
+    }
+
+    // Aplicar tamanho de fonte
+    root.classList.remove('font-small', 'font-medium', 'font-large');
+    root.classList.add(`font-${settings.tamanho_fonte}`);
+
+    // Aplicar animações
+    if (!settings.animacoes) {
+      root.classList.add('no-animations');
+    } else {
+      root.classList.remove('no-animations');
+    }
+  };
+
   const loadSettings = async () => {
     if (!user) return;
 
