@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Mail, Phone, HelpCircle, Book, Users } from "lucide-react";
+import perfilTutorial from "@/assets/perfil-tutorial.mov";
 
 const Help = () => {
   const faqs = [
@@ -24,7 +25,8 @@ const Help = () => {
     },
     {
       question: "Como altero meu perfil?",
-      answer: "Acesse 'Meu Perfil' no menu lateral para visualizar e editar suas informações pessoais."
+      answer: "Acesse 'Meu Perfil' no menu lateral para visualizar e editar suas informações pessoais.",
+      video: perfilTutorial
     }
   ];
 
@@ -75,8 +77,18 @@ const Help = () => {
                   <AccordionTrigger className="text-left">
                     {faq.question}
                   </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    {faq.answer}
+                  <AccordionContent className="text-muted-foreground space-y-3">
+                    <p>{faq.answer}</p>
+                    {faq.video && (
+                      <video 
+                        controls 
+                        className="w-full rounded-lg border"
+                        preload="metadata"
+                      >
+                        <source src={faq.video} type="video/mp4" />
+                        Seu navegador não suporta o elemento de vídeo.
+                      </video>
+                    )}
                   </AccordionContent>
                 </AccordionItem>
               ))}
