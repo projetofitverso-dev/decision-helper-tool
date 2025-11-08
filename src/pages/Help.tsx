@@ -10,13 +10,21 @@ import aguaTutorial from "@/assets/agua-tutorial.mov";
 import substituicaoTutorial from "@/assets/substituicao-tutorial.mov";
 
 const Help = () => {
-  const handleDownloadPDF = () => {
-    const link = document.createElement('a');
-    link.href = '/Guia-FitVerso.pdf';
-    link.download = 'Guia-FitVerso.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownloadPDF = async () => {
+    try {
+      const response = await fetch('/Guia-FitVerso.pdf');
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'Guia-FitVerso.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Erro ao baixar PDF:', error);
+    }
   };
   const faqs = [
     {
