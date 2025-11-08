@@ -15,13 +15,65 @@ import html2canvas from "html2canvas";
 const Help = () => {
   const { toast } = useToast();
 
+  const captureScreenshot = async (url: string): Promise<string> => {
+    return new Promise((resolve) => {
+      const iframe = document.createElement('iframe');
+      iframe.style.position = 'absolute';
+      iframe.style.left = '-9999px';
+      iframe.style.width = '1200px';
+      iframe.style.height = '800px';
+      document.body.appendChild(iframe);
+      
+      iframe.onload = async () => {
+        try {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+          if (iframeDoc && iframeDoc.body) {
+            const canvas = await html2canvas(iframeDoc.body, {
+              width: 1200,
+              height: 800,
+              scale: 0.5,
+              logging: false,
+              useCORS: true,
+            });
+            const imgData = canvas.toDataURL('image/jpeg', 0.7);
+            document.body.removeChild(iframe);
+            resolve(imgData);
+          } else {
+            document.body.removeChild(iframe);
+            resolve('');
+          }
+        } catch (error) {
+          console.error('Error capturing screenshot:', error);
+          document.body.removeChild(iframe);
+          resolve('');
+        }
+      };
+      
+      iframe.src = url;
+    });
+  };
+
   const handleDownloadPDF = async () => {
     toast({
       title: "Gerando PDF...",
-      description: "Por favor aguarde enquanto preparamos seu guia completo.",
+      description: "Por favor aguarde, capturando telas do sistema...",
     });
 
     try {
+      // Capturar screenshots das principais páginas
+      const screenshots = {
+        profile: await captureScreenshot('/dashboard/profile'),
+        measurements: await captureScreenshot('/dashboard/measurements'),
+        addFood: await captureScreenshot('/dashboard/add-food'),
+        water: await captureScreenshot('/dashboard/water-intake'),
+        substitution: await captureScreenshot('/dashboard/food-substitution'),
+      };
+
+      toast({
+        title: "Gerando PDF...",
+        description: "Montando o documento com as imagens...",
+      });
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
@@ -145,6 +197,43 @@ const Help = () => {
         }
         const tipLines = pdf.splitTextToSize(tip, pageWidth - 2 * margin - 8);
         pdf.text(tipLines, margin + 3, yPosition + 8);
+        yPosition += 30;
+
+        // Adicionar screenshot da tela correspondente
+        let screenshot = '';
+        switch (index) {
+          case 0:
+            screenshot = screenshots.profile;
+            break;
+          case 1:
+            screenshot = screenshots.measurements;
+            break;
+          case 2:
+            screenshot = screenshots.addFood;
+            break;
+          case 3:
+            screenshot = screenshots.water;
+            break;
+          case 4:
+            screenshot = screenshots.substitution;
+            break;
+        }
+
+        if (screenshot) {
+          pdf.addPage();
+          yPosition = margin;
+          
+          pdf.setFontSize(12);
+          pdf.setTextColor(59, 130, 246);
+          pdf.text("Visualização da Tela:", margin, yPosition);
+          yPosition += 10;
+          
+          // Adicionar imagem centralizada
+          const imgWidth = pageWidth - 2 * margin;
+          const imgHeight = (imgWidth * 800) / 1200;
+          
+          pdf.addImage(screenshot, 'JPEG', margin, yPosition, imgWidth, imgHeight);
+        }
       });
 
       // Página de FAQs
