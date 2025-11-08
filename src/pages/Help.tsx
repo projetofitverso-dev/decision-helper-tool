@@ -4,6 +4,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Mail, Phone, HelpCircle, Book, Users } from "lucide-react";
 import perfilTutorial from "@/assets/perfil-tutorial.mov";
+import medidasTutorial from "@/assets/medidas-tutorial.mov";
 
 const Help = () => {
   const faqs = [
@@ -17,7 +18,8 @@ const Help = () => {
     },
     {
       question: "Posso editar minhas medidas corporais?",
-      answer: "Sim, vá para 'Medidas Corporais' e clique no botão de editar para atualizar suas informações."
+      answer: "Sim, vá para 'Medidas Corporais' e clique no botão de editar para atualizar suas informações.",
+      video: medidasTutorial
     },
     {
       question: "Como funciona a substituição de alimentos?",
