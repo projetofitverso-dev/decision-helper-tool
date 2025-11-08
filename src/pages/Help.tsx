@@ -1,8 +1,7 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { MessageCircle, Mail, Phone, HelpCircle, Book, Users } from "lucide-react";
+import { HelpCircle, Book, User, Utensils, Droplets, Scale, RefreshCw } from "lucide-react";
 import perfilTutorial from "@/assets/perfil-tutorial.mov";
 import medidasTutorial from "@/assets/medidas-tutorial.mov";
 import adicionarAlimentoTutorial from "@/assets/adicionar-alimento-tutorial.mov";
@@ -38,25 +37,61 @@ const Help = () => {
     }
   ];
 
-  const supportOptions = [
+  const userGuide = [
     {
-      icon: Mail,
-      title: "Email",
-      description: "Envie-nos um email para suporte@fitverso.com",
-      action: "Enviar Email"
-    }
-  ];
-
-  const resources = [
-    {
-      icon: Book,
-      title: "Guia do Usuário",
-      description: "Manual completo de uso da plataforma"
+      icon: User,
+      title: "Configurar Perfil",
+      description: "Configure suas informações pessoais, objetivos e preferências alimentares",
+      steps: [
+        "Acesse 'Meu Perfil' no menu lateral",
+        "Preencha seus dados pessoais",
+        "Defina seus objetivos nutricionais",
+        "Salve as alterações"
+      ]
     },
     {
-      icon: HelpCircle,
-      title: "Tutoriais em Vídeo",
-      description: "Aprenda com nossos vídeos explicativos"
+      icon: Scale,
+      title: "Registrar Medidas",
+      description: "Acompanhe sua evolução através das medidas corporais",
+      steps: [
+        "Vá para 'Medidas Corporais'",
+        "Clique em 'Adicionar Nova Medida'",
+        "Insira peso, altura e outras medidas",
+        "Visualize seu histórico e progresso"
+      ]
+    },
+    {
+      icon: Utensils,
+      title: "Adicionar Alimentos",
+      description: "Registre os alimentos que você consome diariamente",
+      steps: [
+        "Acesse 'Adicionar Alimento'",
+        "Preencha as informações nutricionais",
+        "Defina a quantidade consumida",
+        "Confirme o registro"
+      ]
+    },
+    {
+      icon: Droplets,
+      title: "Controlar Hidratação",
+      description: "Monitore seu consumo diário de água",
+      steps: [
+        "Entre em 'Consumo de Água'",
+        "Registre cada vez que beber água",
+        "Acompanhe sua meta diária",
+        "Veja seu histórico de hidratação"
+      ]
+    },
+    {
+      icon: RefreshCw,
+      title: "Substituir Alimentos",
+      description: "Encontre alternativas saudáveis para seus alimentos",
+      steps: [
+        "Acesse 'Substituição de Alimentos'",
+        "Busque o alimento que deseja substituir",
+        "Veja sugestões de alternativas",
+        "Compare valores nutricionais"
+      ]
     }
   ];
 
@@ -104,54 +139,35 @@ const Help = () => {
           </CardContent>
         </Card>
 
-        {/* Support Options */}
+        {/* User Guide Section */}
         <div className="space-y-4">
-          <h2 className="text-2xl font-semibold text-foreground">Fale Conosco</h2>
-          <div className="grid md:grid-cols-1 max-w-md mx-auto">
-            {supportOptions.map((option, index) => (
+          <h2 className="text-2xl font-semibold text-foreground">Guia do Usuário</h2>
+          <p className="text-muted-foreground">
+            Aprenda a usar todas as funcionalidades da plataforma passo a passo
+          </p>
+          <div className="grid md:grid-cols-2 gap-4">
+            {userGuide.map((guide, index) => (
               <Card key={index} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-start gap-3">
                     <div className="p-2 rounded-lg bg-primary/10">
-                      <option.icon className="h-5 w-5 text-primary" />
+                      <guide.icon className="h-5 w-5 text-primary" />
                     </div>
-                    <div>
-                      <CardTitle className="text-lg">{option.title}</CardTitle>
-                      <CardDescription className="text-sm">
-                        {option.description}
+                    <div className="flex-1">
+                      <CardTitle className="text-lg">{guide.title}</CardTitle>
+                      <CardDescription className="text-sm mt-1">
+                        {guide.description}
                       </CardDescription>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <Button className="w-full" variant="outline">
-                    {option.action}
-                  </Button>
+                  <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                    {guide.steps.map((step, stepIndex) => (
+                      <li key={stepIndex}>{step}</li>
+                    ))}
+                  </ol>
                 </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-
-        {/* Resources Section */}
-        <div className="space-y-4">
-          <h2 className="text-2xl font-semibold text-foreground">Recursos Úteis</h2>
-          <div className="grid md:grid-cols-2 gap-4">
-            {resources.map((resource, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-muted">
-                      <resource.icon className="h-5 w-5 text-muted-foreground" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg">{resource.title}</CardTitle>
-                      <CardDescription className="text-sm">
-                        {resource.description}
-                      </CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
               </Card>
             ))}
           </div>
