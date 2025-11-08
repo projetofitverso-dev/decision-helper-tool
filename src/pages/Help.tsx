@@ -7,6 +7,7 @@ import perfilTutorial from "@/assets/perfil-tutorial.mov";
 import medidasTutorial from "@/assets/medidas-tutorial.mov";
 import adicionarAlimentoTutorial from "@/assets/adicionar-alimento-tutorial.mov";
 import aguaTutorial from "@/assets/agua-tutorial.mov";
+import substituicaoTutorial from "@/assets/substituicao-tutorial.mov";
 
 const Help = () => {
   const faqs = [
@@ -27,7 +28,8 @@ const Help = () => {
     },
     {
       question: "Como funciona a substituição de alimentos?",
-      answer: "Na página 'Substituição de Alimentos', você pode buscar alternativas saudáveis para seus alimentos favoritos."
+      answer: "Na página 'Substituição de Alimentos', você pode buscar alternativas saudáveis para seus alimentos favoritos.",
+      video: substituicaoTutorial
     },
     {
       question: "Como altero meu perfil?",
