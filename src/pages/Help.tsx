@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { MessageCircle, Mail, Phone, HelpCircle, Book, Users } from "lucide-react";
 import perfilTutorial from "@/assets/perfil-tutorial.mov";
 import medidasTutorial from "@/assets/medidas-tutorial.mov";
+import adicionarAlimentoTutorial from "@/assets/adicionar-alimento-tutorial.mov";
 
 const Help = () => {
   const faqs = [
     {
       question: "Como adicionar um novo alimento?",
-      answer: "Vá para a página 'Adicionar Alimento' no menu lateral e preencha as informações nutricionais do alimento."
+      answer: "Vá para a página 'Adicionar Alimento' no menu lateral e preencha as informações nutricionais do alimento.",
+      video: adicionarAlimentoTutorial
     },
     {
       question: "Como registrar meu consumo de água?",
