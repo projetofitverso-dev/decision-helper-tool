@@ -6,6 +6,7 @@ import { MessageCircle, Mail, Phone, HelpCircle, Book, Users } from "lucide-reac
 import perfilTutorial from "@/assets/perfil-tutorial.mov";
 import medidasTutorial from "@/assets/medidas-tutorial.mov";
 import adicionarAlimentoTutorial from "@/assets/adicionar-alimento-tutorial.mov";
+import aguaTutorial from "@/assets/agua-tutorial.mov";
 
 const Help = () => {
   const faqs = [
@@ -16,7 +17,8 @@ const Help = () => {
     },
     {
       question: "Como registrar meu consumo de água?",
-      answer: "Acesse 'Consumo de Água' no menu e registre a quantidade de água consumida ao longo do dia."
+      answer: "Acesse 'Consumo de Água' no menu e registre a quantidade de água consumida ao longo do dia.",
+      video: aguaTutorial
     },
     {
       question: "Posso editar minhas medidas corporais?",
